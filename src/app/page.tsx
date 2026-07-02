@@ -322,6 +322,32 @@ export default function Home() {
     onSettled: () => qc.invalidateQueries({ queryKey: ["batches"] }),
   });
 
+  const feedBatch = useMutation({
+    mutationFn: async (id: string) => {
+      const r = await fetch(`/api/batches/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ markFed: true }),
+      });
+      if (!r.ok) throw new Error("feed batch failed");
+      return r.json();
+    },
+    onMutate: async (id) => {
+      await qc.cancelQueries({ queryKey: ["batches"] });
+      const prev = qc.getQueryData<Batch[]>(["batches"]);
+      const nowIso = new Date().toISOString();
+      qc.setQueryData<Batch[]>(["batches"], (old) =>
+        (old ?? []).map((b) => (b.id === id ? { ...b, startDate: nowIso } : b)),
+      );
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prev) qc.setQueryData(["batches"], ctx.prev);
+      toast.error("Could not mark as fed.");
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ["batches"] }),
+  });
+
   const deleteBatch = useMutation({
     mutationFn: async (id: string) => {
       const r = await fetch(`/api/batches/${id}`, { method: "DELETE" });
@@ -446,7 +472,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background paper-texture">
-      <Header />
+      <Header
+        batches={batches}
+        onGoToCultures={() => setTab("batches")}
+      />
 
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 sm:px-6 py-6 sm:py-8">
         <Tabs value={tab} onValueChange={(v) => setTab(v as TabKey)} className="space-y-6">
@@ -568,6 +597,12 @@ export default function Home() {
                   });
                 }}
                 onAdvance={(id, status) => advanceBatch.mutate({ id, status })}
+                onFeed={(id) => {
+                  feedBatch.mutate(id, {
+                    onSuccess: () => toast.success("Marked as fed — fresh start."),
+                    onError: () => toast.error("Could not mark as fed."),
+                  });
+                }}
                 onDelete={(id) => deleteBatch.mutate(id)}
               />
             )}

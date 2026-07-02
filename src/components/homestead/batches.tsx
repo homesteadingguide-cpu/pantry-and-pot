@@ -5,6 +5,7 @@ import {
   FlaskConical,
   Leaf,
   Plus,
+  Sprout,
   Trash2,
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -52,10 +53,11 @@ interface Props {
     notes?: string;
   }) => void;
   onAdvance: (id: string, status: BatchStatus) => void;
+  onFeed?: (id: string) => void;
   onDelete: (id: string) => void;
 }
 
-export function Batches({ batches, onCreate, onAdvance, onDelete }: Props) {
+export function Batches({ batches, onCreate, onAdvance, onFeed, onDelete }: Props) {
   const [open, setOpen] = useState(false);
 
   const grouped = BATCH_STATUSES.map((s) => ({
@@ -115,6 +117,7 @@ export function Batches({ batches, onCreate, onAdvance, onDelete }: Props) {
                     key={b.id}
                     batch={b}
                     onAdvance={onAdvance}
+                    onFeed={onFeed}
                     onDelete={onDelete}
                   />
                 ))}
@@ -130,10 +133,12 @@ export function Batches({ batches, onCreate, onAdvance, onDelete }: Props) {
 function BatchCard({
   batch,
   onAdvance,
+  onFeed,
   onDelete,
 }: {
   batch: Batch;
   onAdvance: (id: string, status: BatchStatus) => void;
+  onFeed?: (id: string) => void;
   onDelete: (id: string) => void;
 }) {
   const Icon = FlaskConical;
@@ -188,16 +193,42 @@ function BatchCard({
           </p>
         )}
 
-        {next && nextLabel && (
-          <Button
-            size="sm"
-            variant="outline"
-            className="mt-3 w-full border-primary/30 text-primary hover:bg-primary/10"
-            onClick={() => onAdvance(batch.id, next)}
-          >
-            Mark as {nextLabel}
-            <Leaf className="ml-1.5 h-3.5 w-3.5" />
-          </Button>
+        <div className="mt-3 flex gap-2">
+          {/* "Mark as fed" — only for active cultures that need recurring feeding. */}
+          {batch.status === "active" &&
+            (batch.type === "sourdough" ||
+              batch.type === "kefir" ||
+              batch.type === "kombucha") &&
+            onFeed && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="flex-1 border-accent/40 text-accent hover:bg-accent/10"
+                onClick={() => onFeed(batch.id)}
+              >
+                <Sprout className="mr-1.5 h-3.5 w-3.5" />
+                {batch.type === "sourdough" ? "Mark as fed" : "Mark as refreshed"}
+              </Button>
+            )}
+
+          {next && nextLabel && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="flex-1 border-primary/30 text-primary hover:bg-primary/10"
+              onClick={() => onAdvance(batch.id, next)}
+            >
+              Mark as {nextLabel}
+              <Leaf className="ml-1.5 h-3.5 w-3.5" />
+            </Button>
+          )}
+        </div>
+
+        {batch.status === "active" && batch.startDate && (
+          <p className="mt-2 text-center text-[11px] text-muted-foreground">
+            Last {batch.type === "sourdough" ? "fed" : "refreshed"}{" "}
+            {formatRelative(batch.startDate)}
+          </p>
         )}
       </CardContent>
     </Card>

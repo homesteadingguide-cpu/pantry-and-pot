@@ -25,6 +25,10 @@ export async function PATCH(
   if (body.actualEnd !== undefined) {
     patch.actualEnd = body.actualEnd ? new Date(body.actualEnd) : null;
   }
+  // "Mark as fed" — refresh startDate to now for an active culture.
+  if (body.markFed === true) {
+    patch.startDate = new Date();
+  }
   // If moving to "consumed" or "discarded", set actualEnd automatically.
   if (
     (body.status === "consumed" || body.status === "discarded") &&
