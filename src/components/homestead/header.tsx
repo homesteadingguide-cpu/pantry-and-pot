@@ -32,7 +32,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { seasonOf, type Batch } from "./types";
+import { type Batch } from "./types";
 
 const WEATHER_ICONS: Record<string, React.ElementType> = {
   Sun,
@@ -112,9 +112,6 @@ export function Header({ batches, onGoToCultures }: Props) {
           <div className="flex flex-wrap gap-2 text-sm">
             <Chip icon={Calendar} tone="neutral">
               {dateLabel}
-            </Chip>
-            <Chip icon={Leaf} tone="primary">
-              {seasonOf()} on the sill
             </Chip>
             <WeatherChip weatherQ={weatherQ} />
             <StarterChip
