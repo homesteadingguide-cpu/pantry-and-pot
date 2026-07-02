@@ -1,0 +1,39 @@
+// Prisma schema for the Homestead app
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  notes       String?
+  category    String   @default("general") // general | animals | garden | maintenance | harvest
+  recurrence  String   @default("none")    // none | daily | weekly | monthly
+  dueDate     DateTime?
+  completed   Boolean  @default(false)
+  completedAt DateTime?
+  priority    String   @default("normal")  // low | normal | high
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Planting {
+  id            String   @id @default(cuid())
+  crop          String
+  variety       String?
+  bed           String?  // e.g. "Bed 3", "Greenhouse", "Orchard"
+  status        String   @default("planned") // planned | seeded | transplanted | growing | harvest-ready | harvested
+  datePlanted   DateTime?
+  expectedHarvest DateTime?
+  actualHarvest DateTime?
+  quantity      Int      @default(1)
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
