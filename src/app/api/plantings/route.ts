@@ -10,7 +10,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { crop, variety, bed, status, datePlanted, expectedHarvest, quantity, notes } = body;
+  const { crop, variety, spot, status, datePlanted, expectedHarvest, quantity, notes } = body;
   if (!crop || typeof crop !== "string") {
     return NextResponse.json({ error: "crop is required" }, { status: 400 });
   }
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     data: {
       crop: crop.trim(),
       variety: variety?.trim() || null,
-      bed: bed?.trim() || null,
+      spot: spot?.trim() || null,
       status: status || "planned",
       quantity: Number(quantity) || 1,
       notes: notes?.trim() || null,

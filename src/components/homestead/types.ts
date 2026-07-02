@@ -1,13 +1,46 @@
-export type TaskCategory = "general" | "animals" | "garden" | "maintenance" | "harvest";
+export type TaskCategory =
+  | "general"
+  | "kitchen"
+  | "balcony"
+  | "pantry"
+  | "brewing";
 export type TaskRecurrence = "none" | "daily" | "weekly" | "monthly" | "yearly";
 export type TaskPriority = "low" | "normal" | "high";
+
 export type PlantingStatus =
   | "planned"
   | "seeded"
-  | "transplanted"
+  | "sprouted"
   | "growing"
   | "harvest-ready"
   | "harvested";
+
+export type BatchType =
+  | "kombucha"
+  | "sourdough"
+  | "kraut"
+  | "kefir"
+  | "kimchi"
+  | "vinegar"
+  | "miso"
+  | "other";
+
+export type BatchStatus =
+  | "active"
+  | "fermenting"
+  | "bottling"
+  | "ready"
+  | "consumed"
+  | "discarded";
+
+export type PantryCategory =
+  | "dry"
+  | "ferment"
+  | "preserve"
+  | "canned"
+  | "frozen"
+  | "spice"
+  | "supply";
 
 export interface Task {
   id: string;
@@ -26,7 +59,7 @@ export interface Planting {
   id: string;
   crop: string;
   variety: string | null;
-  bed: string | null;
+  spot: string | null;
   status: PlantingStatus;
   datePlanted: string | null;
   expectedHarvest: string | null;
@@ -36,12 +69,41 @@ export interface Planting {
   createdAt: string;
 }
 
-export const TASK_CATEGORIES: { value: TaskCategory; label: string; icon: string }[] = [
+export interface Batch {
+  id: string;
+  type: BatchType;
+  name: string;
+  status: BatchStatus;
+  startDate: string | null;
+  expectedEnd: string | null;
+  actualEnd: string | null;
+  notes: string | null;
+  createdAt: string;
+}
+
+export interface PantryItem {
+  id: string;
+  name: string;
+  category: PantryCategory;
+  quantity: number;
+  unit: string;
+  lowStockAt: number | null;
+  location: string | null;
+  dateAdded: string;
+  notes: string | null;
+  createdAt: string;
+}
+
+export const TASK_CATEGORIES: {
+  value: TaskCategory;
+  label: string;
+  icon: string;
+}[] = [
   { value: "general", label: "General", icon: "Leaf" },
-  { value: "animals", label: "Animals", icon: "Egg" },
-  { value: "garden", label: "Garden", icon: "Sprout" },
-  { value: "maintenance", label: "Maintenance", icon: "Hammer" },
-  { value: "harvest", label: "Harvest", icon: "Apple" },
+  { value: "kitchen", label: "Kitchen", icon: "Croissant" },
+  { value: "balcony", label: "Balcony", icon: "Sprout" },
+  { value: "pantry", label: "Pantry", icon: "Archive" },
+  { value: "brewing", label: "Brewing", icon: "FlaskConical" },
 ];
 
 export const TASK_RECURRENCES: TaskRecurrence[] = [
@@ -54,13 +116,79 @@ export const TASK_RECURRENCES: TaskRecurrence[] = [
 
 export const TASK_PRIORITIES: TaskPriority[] = ["low", "normal", "high"];
 
-export const PLANTING_STATUSES: { value: PlantingStatus; label: string; tone: string }[] = [
+export const PLANTING_STATUSES: {
+  value: PlantingStatus;
+  label: string;
+  tone: string;
+}[] = [
   { value: "planned", label: "Planned", tone: "muted" },
   { value: "seeded", label: "Seeded", tone: "info" },
-  { value: "transplanted", label: "Transplanted", tone: "info" },
+  { value: "sprouted", label: "Sprouted", tone: "info" },
   { value: "growing", label: "Growing", tone: "primary" },
-  { value: "harvest-ready", label: "Harvest Ready", tone: "accent" },
+  { value: "harvest-ready", label: "Ready to harvest", tone: "accent" },
   { value: "harvested", label: "Harvested", tone: "secondary" },
+];
+
+export const BATCH_TYPES: { value: BatchType; label: string }[] = [
+  { value: "kombucha", label: "Kombucha" },
+  { value: "sourdough", label: "Sourdough" },
+  { value: "kraut", label: "Sauerkraut" },
+  { value: "kefir", label: "Kefir" },
+  { value: "kimchi", label: "Kimchi" },
+  { value: "vinegar", label: "Vinegar" },
+  { value: "miso", label: "Miso" },
+  { value: "other", label: "Other" },
+];
+
+export const BATCH_STATUSES: {
+  value: BatchStatus;
+  label: string;
+  tone: string;
+  hint: string;
+}[] = [
+  { value: "active", label: "Active", tone: "info", hint: "Culture is awake and feeding" },
+  { value: "fermenting", label: "Fermenting", tone: "primary", hint: "In the jar, doing its thing" },
+  { value: "bottling", label: "Ready to bottle", tone: "accent", hint: "Time to jar or move to fridge" },
+  { value: "ready", label: "Ready to enjoy", tone: "accent", hint: "Finished and waiting" },
+  { value: "consumed", label: "Enjoyed", tone: "secondary", hint: "Eaten, drunk, gone" },
+  { value: "discarded", label: "Discarded", tone: "muted", hint: "Did not work out" },
+];
+
+// Sensible default progression: active → fermenting → bottling → ready → consumed
+export const BATCH_NEXT: Record<BatchStatus, BatchStatus | null> = {
+  active: "fermenting",
+  fermenting: "bottling",
+  bottling: "ready",
+  ready: "consumed",
+  consumed: null,
+  discarded: null,
+};
+
+export const PANTRY_CATEGORIES: {
+  value: PantryCategory;
+  label: string;
+  tone: string;
+}[] = [
+  { value: "dry", label: "Dry goods", tone: "muted" },
+  { value: "ferment", label: "Ferments", tone: "primary" },
+  { value: "preserve", label: "Preserves", tone: "accent" },
+  { value: "canned", label: "Canned", tone: "info" },
+  { value: "frozen", label: "Frozen", tone: "info" },
+  { value: "spice", label: "Spices", tone: "accent" },
+  { value: "supply", label: "Supplies", tone: "secondary" },
+];
+
+export const PANTRY_UNITS: string[] = [
+  "jar",
+  "bag",
+  "bottle",
+  "pack",
+  "kg",
+  "g",
+  "L",
+  "ml",
+  "loaf",
+  "head",
 ];
 
 export function statusToneClass(tone: string): string {
@@ -132,4 +260,9 @@ export function seasonOf(date = new Date()): string {
   if (m >= 5 && m <= 7) return "Summer";
   if (m >= 8 && m <= 10) return "Autumn";
   return "Winter";
+}
+
+export function isLowStock(item: PantryItem): boolean {
+  if (item.lowStockAt == null) return false;
+  return item.quantity <= item.lowStockAt;
 }

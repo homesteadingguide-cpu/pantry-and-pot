@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import {
-  Apple,
+  Croissant,
   CheckCircle2,
   Circle,
-  Egg,
-  Hammer,
+  FlaskConical,
+  Archive,
   Leaf,
   Plus,
   Sprout,
@@ -49,10 +49,10 @@ import {
 
 const CATEGORY_ICONS: Record<TaskCategory, React.ElementType> = {
   general: Leaf,
-  animals: Egg,
-  garden: Sprout,
-  maintenance: Hammer,
-  harvest: Apple,
+  kitchen: Croissant,
+  balcony: Sprout,
+  pantry: Archive,
+  brewing: FlaskConical,
 };
 
 interface Props {
@@ -320,7 +320,7 @@ function AddChoreDialog({
           <Label htmlFor="title">What needs doing?</Label>
           <Input
             id="title"
-            placeholder="e.g. Weed the carrot bed"
+            placeholder="e.g. Feed the sourdough starter"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             autoFocus
@@ -388,7 +388,7 @@ function AddChoreDialog({
           <Label htmlFor="notes">Notes</Label>
           <Textarea
             id="notes"
-            placeholder="Optional context, e.g. ‘feed bag is in the barn loft’"
+            placeholder="Optional context, e.g. ‘1:1:1 ratio — 20g starter, 20g flour, 20g water’"
             rows={2}
             value={notes}
             onChange={(e) => setNotes(e.target.value)}

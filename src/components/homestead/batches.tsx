@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Apple, Leaf, Plus, Sprout, Trash2 } from "lucide-react";
+import {
+  FlaskConical,
+  Leaf,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,60 +30,56 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import {
-  type Planting,
-  type PlantingStatus,
-  PLANTING_STATUSES,
+  type Batch,
+  type BatchStatus,
+  type BatchType,
+  BATCH_NEXT,
+  BATCH_STATUSES,
+  BATCH_TYPES,
   formatDate,
   formatRelative,
   statusToneClass,
 } from "./types";
 
 interface Props {
-  plantings: Planting[];
+  batches: Batch[];
   onCreate: (data: {
-    crop: string;
-    variety?: string;
-    spot?: string;
-    status: PlantingStatus;
-    quantity: number;
+    type: BatchType;
+    name: string;
+    status: BatchStatus;
+    startDate?: string;
+    expectedEnd?: string;
     notes?: string;
-    datePlanted?: string;
-    expectedHarvest?: string;
   }) => void;
-  onStatusChange: (id: string, status: PlantingStatus) => void;
+  onAdvance: (id: string, status: BatchStatus) => void;
   onDelete: (id: string) => void;
 }
 
-export function Plantings({
-  plantings,
-  onCreate,
-  onStatusChange,
-  onDelete,
-}: Props) {
+export function Batches({ batches, onCreate, onAdvance, onDelete }: Props) {
   const [open, setOpen] = useState(false);
 
-  const grouped = PLANTING_STATUSES.map((s) => ({
+  const grouped = BATCH_STATUSES.map((s) => ({
     ...s,
-    items: plantings.filter((p) => p.status === s.value),
+    items: batches.filter((b) => b.status === s.value),
   })).filter((g) => g.items.length > 0);
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h2 className="font-serif text-2xl font-semibold">Plantings</h2>
+          <h2 className="font-serif text-2xl font-semibold">Cultures &amp; ferments</h2>
           <p className="text-sm text-muted-foreground">
-            Balcony pots, windowsill jars, and grow-shelf trays — from seed to plate.
+            Kombucha, sourdough, kraut, kefir — every living thing on your counter.
           </p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
               <Plus className="mr-1.5 h-4 w-4" />
-              New planting
+              New batch
             </Button>
           </DialogTrigger>
-          <AddPlantingDialog
+          <AddBatchDialog
             onClose={() => setOpen(false)}
             onCreate={(data) => {
               onCreate(data);
@@ -91,29 +92,29 @@ export function Plantings({
       {grouped.length === 0 ? (
         <Card>
           <CardContent className="p-10 text-center text-sm text-muted-foreground">
-            No plantings yet — add your first row to begin the season.
+            No active cultures yet — start your first SCOBY hotel or sourdough starter.
           </CardContent>
         </Card>
       ) : (
         <div className="space-y-6">
           {grouped.map((group) => (
             <section key={group.value}>
-              <div className="mb-2 flex items-center gap-2">
+              <div className="mb-2 flex flex-wrap items-center gap-2">
                 <span
                   className={`rounded-full border px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-wide ${statusToneClass(group.tone)}`}
                 >
                   {group.label}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  {group.items.length} planting{group.items.length === 1 ? "" : "s"}
+                  {group.items.length} batch{group.items.length === 1 ? "" : "es"} · {group.hint}
                 </span>
               </div>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {group.items.map((p) => (
-                  <PlantingCard
-                    key={p.id}
-                    planting={p}
-                    onStatusChange={onStatusChange}
+                {group.items.map((b) => (
+                  <BatchCard
+                    key={b.id}
+                    batch={b}
+                    onAdvance={onAdvance}
                     onDelete={onDelete}
                   />
                 ))}
@@ -126,29 +127,20 @@ export function Plantings({
   );
 }
 
-function PlantingCard({
-  planting,
-  onStatusChange,
+function BatchCard({
+  batch,
+  onAdvance,
   onDelete,
 }: {
-  planting: Planting;
-  onStatusChange: (id: string, status: PlantingStatus) => void;
+  batch: Batch;
+  onAdvance: (id: string, status: BatchStatus) => void;
   onDelete: (id: string) => void;
 }) {
-  const Icon = planting.status === "harvested" ? Apple : Sprout;
-  const nextStatus: PlantingStatus | null = (() => {
-    const order: PlantingStatus[] = [
-      "planned",
-      "seeded",
-      "transplanted",
-      "growing",
-      "harvest-ready",
-      "harvested",
-    ];
-    const i = order.indexOf(planting.status);
-    if (i === -1 || i === order.length - 1) return null;
-    return order[i + 1];
-  })();
+  const Icon = FlaskConical;
+  const next = BATCH_NEXT[batch.status];
+  const nextLabel = next
+    ? BATCH_STATUSES.find((s) => s.value === next)?.label.toLowerCase()
+    : null;
 
   return (
     <Card className="group flex flex-col">
@@ -160,58 +152,50 @@ function PlantingCard({
             </div>
             <div>
               <h3 className="font-serif text-lg leading-tight text-foreground">
-                {planting.crop}
+                {batch.name}
               </h3>
-              {planting.variety && (
-                <p className="text-xs italic text-muted-foreground">
-                  {planting.variety}
-                </p>
-              )}
+              <p className="text-xs capitalize text-muted-foreground">
+                {batch.type}
+              </p>
             </div>
           </div>
           <Button
             size="icon"
             variant="ghost"
             className="h-7 w-7 text-muted-foreground opacity-0 transition group-hover:opacity-100 hover:text-destructive"
-            onClick={() => onDelete(planting.id)}
-            aria-label="Delete planting"
+            onClick={() => onDelete(batch.id)}
+            aria-label="Delete batch"
           >
             <Trash2 className="h-3.5 w-3.5" />
           </Button>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 text-xs">
-          <Field label="Spot" value={planting.spot ?? "—"} />
-          <Field label="Quantity" value={`${planting.quantity}`} />
+        <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+          <Field label="Started" value={formatDate(batch.startDate)} />
           <Field
-            label="Planted"
-            value={formatDate(planting.datePlanted)}
-          />
-          <Field
-            label="Harvest"
+            label={batch.status === "consumed" || batch.status === "discarded" ? "Finished" : "Expected"}
             value={
-              planting.actualHarvest
-                ? formatDate(planting.actualHarvest)
-                : formatRelative(planting.expectedHarvest)
+              batch.actualEnd
+                ? formatDate(batch.actualEnd)
+                : formatRelative(batch.expectedEnd)
             }
           />
         </div>
 
-        {planting.notes && (
+        {batch.notes && (
           <p className="mt-3 rounded-md bg-muted/40 px-2.5 py-1.5 text-xs text-muted-foreground">
-            {planting.notes}
+            {batch.notes}
           </p>
         )}
 
-        {nextStatus && (
+        {next && nextLabel && (
           <Button
             size="sm"
             variant="outline"
             className="mt-3 w-full border-primary/30 text-primary hover:bg-primary/10"
-            onClick={() => onStatusChange(planting.id, nextStatus)}
+            onClick={() => onAdvance(batch.id, next)}
           >
-            Mark as{" "}
-            {PLANTING_STATUSES.find((s) => s.value === nextStatus)?.label.toLowerCase()}
+            Mark as {nextLabel}
             <Leaf className="ml-1.5 h-3.5 w-3.5" />
           </Button>
         )}
@@ -231,109 +215,88 @@ function Field({ label, value }: { label: string; value: string }) {
   );
 }
 
-function AddPlantingDialog({
+function AddBatchDialog({
   onClose,
   onCreate,
 }: {
   onClose: () => void;
   onCreate: (data: {
-    crop: string;
-    variety?: string;
-    spot?: string;
-    status: PlantingStatus;
-    quantity: number;
+    type: BatchType;
+    name: string;
+    status: BatchStatus;
+    startDate?: string;
+    expectedEnd?: string;
     notes?: string;
-    datePlanted?: string;
-    expectedHarvest?: string;
   }) => void;
 }) {
-  const [crop, setCrop] = useState("");
-  const [variety, setVariety] = useState("");
-  const [spot, setSpot] = useState("");
-  const [status, setStatus] = useState<PlantingStatus>("planned");
-  const [quantity, setQuantity] = useState("1");
-  const [datePlanted, setDatePlanted] = useState("");
-  const [expectedHarvest, setExpectedHarvest] = useState("");
+  const [type, setType] = useState<BatchType>("kombucha");
+  const [name, setName] = useState("");
+  const [status, setStatus] = useState<BatchStatus>("active");
+  const [startDate, setStartDate] = useState("");
+  const [expectedEnd, setExpectedEnd] = useState("");
   const [notes, setNotes] = useState("");
 
   const submit = () => {
-    if (!crop.trim()) {
-      toast.error("Give the crop a name first.");
+    if (!name.trim()) {
+      toast.error("Give the batch a name first.");
       return;
     }
     onCreate({
-      crop: crop.trim(),
-      variety: variety.trim() || undefined,
-      spot: spot.trim() || undefined,
+      type,
+      name: name.trim(),
       status,
-      quantity: Number(quantity) || 1,
       notes: notes.trim() || undefined,
-      datePlanted: datePlanted || undefined,
-      expectedHarvest: expectedHarvest || undefined,
+      startDate: startDate || undefined,
+      expectedEnd: expectedEnd || undefined,
     });
     onClose();
-    toast.success("Planting added to the counter garden.");
+    toast.success("Batch added to the counter.");
   };
 
   return (
     <DialogContent className="sm:max-w-md">
       <DialogHeader>
-        <DialogTitle className="font-serif text-xl">Add a planting</DialogTitle>
+        <DialogTitle className="font-serif text-xl">Start a new batch</DialogTitle>
         <DialogDescription>
-          A single pot, jar, or tray. Add as many as you like.
+          Kombucha, sourdough, kraut, kefir, kimchi — track each one from start to jar.
         </DialogDescription>
       </DialogHeader>
       <div className="space-y-3">
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1.5">
-            <Label htmlFor="crop">Crop</Label>
+            <Label>Type</Label>
+            <Select value={type} onValueChange={(v) => setType(v as BatchType)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {BATCH_TYPES.map((t) => (
+                  <SelectItem key={t.value} value={t.value}>
+                    {t.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="name">Name</Label>
             <Input
-              id="crop"
-              placeholder="e.g. Tomato"
-              value={crop}
-              onChange={(e) => setCrop(e.target.value)}
+              id="name"
+              placeholder="e.g. Raspberry-ginger 2F"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               autoFocus
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="variety">Variety</Label>
-            <Input
-              id="variety"
-              placeholder="e.g. San Marzano"
-              value={variety}
-              onChange={(e) => setVariety(e.target.value)}
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1.5">
-            <Label htmlFor="spot">Spot / container</Label>
-            <Input
-              id="spot"
-              placeholder="e.g. Balcony railing, Kitchen window"
-              value={spot}
-              onChange={(e) => setSpot(e.target.value)}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="qty">Quantity</Label>
-            <Input
-              id="qty"
-              type="number"
-              min={1}
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
             />
           </div>
         </div>
         <div className="space-y-1.5">
           <Label>Stage</Label>
-          <Select value={status} onValueChange={(v) => setStatus(v as PlantingStatus)}>
+          <Select value={status} onValueChange={(v) => setStatus(v as BatchStatus)}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {PLANTING_STATUSES.map((s) => (
+              {BATCH_STATUSES.map((s) => (
                 <SelectItem key={s.value} value={s.value}>
                   {s.label}
                 </SelectItem>
@@ -343,29 +306,29 @@ function AddPlantingDialog({
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1.5">
-            <Label htmlFor="planted">Planted on</Label>
+            <Label htmlFor="start">Started on</Label>
             <Input
-              id="planted"
+              id="start"
               type="date"
-              value={datePlanted}
-              onChange={(e) => setDatePlanted(e.target.value)}
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="harvest">Expected harvest</Label>
+            <Label htmlFor="end">Expected end</Label>
             <Input
-              id="harvest"
+              id="end"
               type="date"
-              value={expectedHarvest}
-              onChange={(e) => setExpectedHarvest(e.target.value)}
+              value={expectedEnd}
+              onChange={(e) => setExpectedEnd(e.target.value)}
             />
           </div>
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="pnotes">Notes</Label>
+          <Label htmlFor="bnotes">Notes</Label>
           <Textarea
-            id="pnotes"
-            placeholder="Optional — soil mix, light, companion plant"
+            id="bnotes"
+            placeholder="Optional — recipe, ratios, observations"
             rows={2}
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
@@ -376,7 +339,7 @@ function AddPlantingDialog({
         <Button variant="ghost" onClick={onClose}>
           Cancel
         </Button>
-        <Button onClick={submit}>Add to counter garden</Button>
+        <Button onClick={submit}>Add to counter</Button>
       </DialogFooter>
     </DialogContent>
   );

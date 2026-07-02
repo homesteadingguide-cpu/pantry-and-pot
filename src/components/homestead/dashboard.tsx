@@ -1,11 +1,13 @@
 "use client";
 
 import {
+  AlertTriangle,
   Apple,
+  Croissant,
   CheckCircle2,
   Circle,
-  Egg,
-  Hammer,
+  FlaskConical,
+  Archive,
   Leaf,
   Sprout,
   Sunrise,
@@ -16,30 +18,44 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
+  type Batch,
+  type PantryItem,
   type Planting,
   type Task,
   type TaskCategory,
+  BATCH_STATUSES,
   formatRelative,
-  priorityClass,
+  isLowStock,
   statusToneClass,
-  PLANTING_STATUSES,
 } from "./types";
 
-const CATEGORY_ICONS: Record<TaskCategory, React.ElementType> = {
+const CATEGORY_ICONS_REAL: Record<TaskCategory, React.ElementType> = {
   general: Leaf,
-  animals: Egg,
-  garden: Sprout,
-  maintenance: Hammer,
-  harvest: Apple,
+  kitchen: Croissant,
+  balcony: Sprout,
+  pantry: Archive,
+  brewing: FlaskConical,
 };
 
 interface Props {
   tasks: Task[];
   plantings: Planting[];
+  batches: Batch[];
+  pantry: PantryItem[];
   onGoToChores?: () => void;
+  onGoToBatches?: () => void;
+  onGoToPantry?: () => void;
 }
 
-export function Dashboard({ tasks, plantings, onGoToChores }: Props) {
+export function Dashboard({
+  tasks,
+  plantings,
+  batches,
+  pantry,
+  onGoToChores,
+  onGoToBatches,
+  onGoToPantry,
+}: Props) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -58,14 +74,15 @@ export function Dashboard({ tasks, plantings, onGoToChores }: Props) {
   );
 
   const harvestReady = plantings.filter((p) => p.status === "harvest-ready");
-  const upcomingHarvest = plantings
-    .filter((p) => p.expectedHarvest && p.status !== "harvested")
-    .sort(
-      (a, b) =>
-        new Date(a.expectedHarvest!).getTime() -
-        new Date(b.expectedHarvest!).getTime(),
-    )
-    .slice(0, 5);
+
+  const readyBatches = batches.filter(
+    (b) => b.status === "bottling" || b.status === "ready",
+  );
+  const activeBatches = batches.filter(
+    (b) => b.status === "active" || b.status === "fermenting",
+  );
+
+  const lowStockItems = pantry.filter(isLowStock);
 
   const completionRate =
     todaysTasks.length + completedToday.length === 0
@@ -85,15 +102,15 @@ export function Dashboard({ tasks, plantings, onGoToChores }: Props) {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           icon={Sunrise}
-          label="Today's chores"
+          label="Today's routines"
           value={`${todaysTasks.length}`}
           hint={`${completedToday.length} already done`}
         />
         <StatCard
-          icon={CheckCircle2}
-          label="Open tasks"
-          value={`${openCount}`}
-          hint="across all categories"
+          icon={FlaskConical}
+          label="Living cultures"
+          value={`${activeBatches.length}`}
+          hint={`${readyBatches.length} ready to bottle or enjoy`}
         />
         <StatCard
           icon={TrendingUp}
@@ -104,25 +121,25 @@ export function Dashboard({ tasks, plantings, onGoToChores }: Props) {
           <Progress value={completionRate} className="mt-2 h-1.5" />
         </StatCard>
         <StatCard
-          icon={Apple}
-          label="Ready to harvest"
-          value={`${harvestReady.length}`}
-          hint={`${growingCount} still growing`}
+          icon={AlertTriangle}
+          label="Pantry low"
+          value={`${lowStockItems.length}`}
+          hint={`${growingCount} still growing on the sill`}
+          tone={lowStockItems.length > 0 ? "accent" : undefined}
         />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Today's chores */}
+        {/* Today's routines */}
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-start justify-between gap-4">
             <div>
-              <CardTitle className="font-serif text-2xl">Today at a glance</CardTitle>
+              <CardTitle className="font-serif text-2xl">Today on the counter</CardTitle>
               <CardDescription>
-                Chores that need your hands before sundown.
+                The small daily acts that keep a homestead humming.
               </CardDescription>
             </div>
             <Button
-              asChild={false}
               variant="ghost"
               size="sm"
               onClick={onGoToChores}
@@ -133,10 +150,10 @@ export function Dashboard({ tasks, plantings, onGoToChores }: Props) {
           </CardHeader>
           <CardContent className="space-y-2">
             {todaysTasks.length === 0 ? (
-              <EmptyHint label="Nothing pressing today. Rest and the rows can wait." />
+              <EmptyHint label="Nothing pressing today. Rest and the dough can wait." />
             ) : (
               todaysTasks.slice(0, 6).map((t) => {
-                const Icon = CATEGORY_ICONS[t.category] ?? Leaf;
+                const Icon = CATEGORY_ICONS_REAL[t.category] ?? Leaf;
                 return (
                   <div
                     key={t.id}
@@ -164,34 +181,37 @@ export function Dashboard({ tasks, plantings, onGoToChores }: Props) {
           </CardContent>
         </Card>
 
-        {/* Harvest queue */}
+        {/* Batches needing attention */}
         <Card>
-          <CardHeader>
-            <CardTitle className="font-serif text-xl">Coming to harvest</CardTitle>
-            <CardDescription>Closest ripening rows first.</CardDescription>
+          <CardHeader className="flex flex-row items-start justify-between gap-4">
+            <div>
+              <CardTitle className="font-serif text-xl">Jars to check</CardTitle>
+              <CardDescription>Ready to bottle or move to the fridge.</CardDescription>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onGoToBatches}
+              disabled={!onGoToBatches}
+            >
+              <span>Open →</span>
+            </Button>
           </CardHeader>
           <CardContent className="space-y-2">
-            {upcomingHarvest.length === 0 ? (
-              <EmptyHint label="No ripening rows on the calendar." />
+            {readyBatches.length === 0 ? (
+              <EmptyHint label="No batches waiting on you today." />
             ) : (
-              upcomingHarvest.map((p) => {
-                const meta = PLANTING_STATUSES.find((s) => s.value === p.status);
+              readyBatches.slice(0, 5).map((b) => {
+                const meta = BATCH_STATUSES.find((s) => s.value === b.status);
                 return (
                   <div
-                    key={p.id}
+                    key={b.id}
                     className="flex items-center justify-between gap-3 rounded-md border border-border/70 bg-card/50 px-3 py-2"
                   >
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-medium">
-                        {p.crop}
-                        {p.variety ? (
-                          <span className="ml-1 text-muted-foreground">
-                            · {p.variety}
-                          </span>
-                        ) : null}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {p.bed ?? "no bed"} · {formatRelative(p.expectedHarvest)}
+                      <p className="truncate text-sm font-medium">{b.name}</p>
+                      <p className="text-xs capitalize text-muted-foreground">
+                        {b.type} · {formatRelative(b.expectedEnd)}
                       </p>
                     </div>
                     {meta && (
@@ -209,30 +229,100 @@ export function Dashboard({ tasks, plantings, onGoToChores }: Props) {
         </Card>
       </div>
 
-      {/* Recent activity */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-serif text-xl">Done today</CardTitle>
-          <CardDescription>The satisfaction of finished rows.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {completedToday.length === 0 ? (
-            <EmptyHint label="Nothing ticked off yet — go start." />
-          ) : (
-            <div className="flex flex-wrap gap-2">
-              {completedToday.map((t) => (
-                <span
-                  key={t.id}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary ring-1 ring-primary/20"
-                >
-                  <CheckCircle2 className="h-3.5 w-3.5" />
-                  {t.title}
-                </span>
-              ))}
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Low stock */}
+        <Card>
+          <CardHeader className="flex flex-row items-start justify-between gap-4">
+            <div>
+              <CardTitle className="font-serif text-xl">Running low</CardTitle>
+              <CardDescription>Pantry items at or below their threshold.</CardDescription>
             </div>
-          )}
-        </CardContent>
-      </Card>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onGoToPantry}
+              disabled={!onGoToPantry}
+            >
+              <span>Open →</span>
+            </Button>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {lowStockItems.length === 0 ? (
+              <EmptyHint label="Pantry is well-stocked. Carry on." />
+            ) : (
+              lowStockItems.slice(0, 6).map((i) => (
+                <div
+                  key={i.id}
+                  className="flex items-center justify-between gap-3 rounded-md border border-accent/30 bg-accent/5 px-3 py-2"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">{i.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {i.location ?? "no spot"} · reorder soon
+                    </p>
+                  </div>
+                  <span className="shrink-0 rounded-full bg-accent/15 px-2 py-0.5 text-xs font-medium text-accent-foreground ring-1 ring-accent/30">
+                    {i.quantity} {i.unit}
+                  </span>
+                </div>
+              ))
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Ready on the sill */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-serif text-xl">Ready on the sill</CardTitle>
+            <CardDescription>Balcony and windowsill crops ripe now.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {harvestReady.length === 0 ? (
+              <EmptyHint label="Nothing ready to harvest — patience." />
+            ) : (
+              harvestReady.map((p) => (
+                <div
+                  key={p.id}
+                  className="flex items-center justify-between gap-3 rounded-md border border-border/70 bg-card/50 px-3 py-2"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">{p.crop}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {p.spot ?? "no spot"}
+                    </p>
+                  </div>
+                  <Apple className="h-4 w-4 shrink-0 text-accent" />
+                </div>
+              ))
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Done today */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-serif text-xl">Done today</CardTitle>
+            <CardDescription>The quiet satisfaction of finished jars.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {completedToday.length === 0 ? (
+              <EmptyHint label="Nothing ticked off yet — go start." />
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {completedToday.map((t) => (
+                  <span
+                    key={t.id}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary ring-1 ring-primary/20"
+                  >
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                    {t.title}
+                  </span>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
@@ -243,21 +333,25 @@ function StatCard({
   value,
   hint,
   children,
+  tone,
 }: {
   icon: React.ElementType;
   label: string;
   value: string;
   hint?: string;
   children?: React.ReactNode;
+  tone?: "accent";
 }) {
   return (
-    <Card>
+    <Card className={tone === "accent" ? "border-accent/40 bg-accent/5" : undefined}>
       <CardContent className="p-5">
         <div className="flex items-center justify-between">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">
             {label}
           </p>
-          <Icon className="h-4 w-4 text-primary/70" />
+          <Icon
+            className={`h-4 w-4 ${tone === "accent" ? "text-accent" : "text-primary/70"}`}
+          />
         </div>
         <p className="mt-2 font-serif text-3xl font-semibold text-foreground">
           {value}

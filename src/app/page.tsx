@@ -1,7 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { LayoutDashboard, ListTodo, Sprout, Sparkles, Database } from "lucide-react";
+import {
+  Archive,
+  Database,
+  FlaskConical,
+  LayoutDashboard,
+  ListTodo,
+  Sprout,
+  Sparkles,
+} from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -10,16 +18,24 @@ import { Header } from "@/components/homestead/header";
 import { Dashboard } from "@/components/homestead/dashboard";
 import { Chores } from "@/components/homestead/chores";
 import { Plantings } from "@/components/homestead/plantings";
+import { Batches } from "@/components/homestead/batches";
+import { Pantry } from "@/components/homestead/pantry";
 import {
+  type Batch,
+  type BatchStatus,
+  type BatchType,
+  type PantryCategory,
+  type PantryItem,
   type Planting,
   type PlantingStatus,
   type Task,
   type TaskCategory,
   type TaskPriority,
   type TaskRecurrence,
+  isLowStock,
 } from "@/components/homestead/types";
 
-type TabKey = "dashboard" | "chores" | "plantings";
+type TabKey = "dashboard" | "chores" | "plantings" | "batches" | "pantry";
 
 async function fetchJson<T>(url: string): Promise<T> {
   const r = await fetch(url, { cache: "no-store" });
@@ -39,12 +55,22 @@ export default function Home() {
         const r = await fetch("/api/tasks", { cache: "no-store" });
         const tasks = r.ok ? await r.json() : [];
         if (Array.isArray(tasks) && tasks.length === 0) {
-          const p = await fetch("/api/plantings", { cache: "no-store" });
-          const plants = p.ok ? await p.json() : [];
-          if (Array.isArray(plants) && plants.length === 0) {
+          // Quick empty-check across all tables
+          const [p, b, y] = await Promise.all([
+            fetch("/api/plantings", { cache: "no-store" }).then((x) => x.json()).catch(() => []),
+            fetch("/api/batches", { cache: "no-store" }).then((x) => x.json()).catch(() => []),
+            fetch("/api/pantry", { cache: "no-store" }).then((x) => x.json()).catch(() => []),
+          ]);
+          if (
+            (Array.isArray(p) && p.length === 0) ||
+            (Array.isArray(b) && b.length === 0) ||
+            (Array.isArray(y) && y.length === 0)
+          ) {
             await fetch("/api/seed", { method: "POST" });
             qc.invalidateQueries({ queryKey: ["tasks"] });
             qc.invalidateQueries({ queryKey: ["plantings"] });
+            qc.invalidateQueries({ queryKey: ["batches"] });
+            qc.invalidateQueries({ queryKey: ["pantry"] });
           }
         }
       } finally {
@@ -63,7 +89,18 @@ export default function Home() {
     queryFn: () => fetchJson<Planting[]>("/api/plantings"),
     enabled: seeded,
   });
+  const batchesQ = useQuery({
+    queryKey: ["batches"],
+    queryFn: () => fetchJson<Batch[]>("/api/batches"),
+    enabled: seeded,
+  });
+  const pantryQ = useQuery({
+    queryKey: ["pantry"],
+    queryFn: () => fetchJson<PantryItem[]>("/api/pantry"),
+    enabled: seeded,
+  });
 
+  // -------- Tasks --------
   const toggleTask = useMutation({
     mutationFn: async ({ id, completed }: { id: string; completed: boolean }) => {
       const r = await fetch(`/api/tasks/${id}`, {
@@ -91,24 +128,22 @@ export default function Home() {
       toast.error("Could not update task.");
     },
     onSuccess: (_d, vars) => {
-      // If a recurring task was just completed, re-create the next occurrence
-      // with a fresh due date so the chore keeps showing up.
       const current = qc.getQueryData<Task[]>(["tasks"])?.find((t) => t.id === vars.id);
       if (current && current.recurrence !== "none") {
         const next = nextDueDate(current.recurrence, current.dueDate);
-        createTask.mutate({
-          title: current.title,
-          notes: current.notes ?? undefined,
-          category: current.category,
-          recurrence: current.recurrence,
-          priority: current.priority,
-          dueDate: next ?? undefined,
-        });
+        if (next) {
+          createTask.mutate({
+            title: current.title,
+            notes: current.notes ?? undefined,
+            category: current.category,
+            recurrence: current.recurrence,
+            priority: current.priority,
+            dueDate: next,
+          });
+        }
       }
     },
-    onSettled: () => {
-      qc.invalidateQueries({ queryKey: ["tasks"] });
-    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ["tasks"] }),
   });
 
   const deleteTask = useMutation({
@@ -152,11 +187,12 @@ export default function Home() {
     onSettled: () => qc.invalidateQueries({ queryKey: ["tasks"] }),
   });
 
+  // -------- Plantings --------
   const createPlanting = useMutation({
     mutationFn: async (data: {
       crop: string;
       variety?: string;
-      bed?: string;
+      spot?: string;
       status: PlantingStatus;
       quantity: number;
       notes?: string;
@@ -233,11 +269,163 @@ export default function Home() {
     onSettled: () => qc.invalidateQueries({ queryKey: ["plantings"] }),
   });
 
+  // -------- Batches --------
+  const createBatch = useMutation({
+    mutationFn: async (data: {
+      type: BatchType;
+      name: string;
+      status: BatchStatus;
+      startDate?: string;
+      expectedEnd?: string;
+      notes?: string;
+    }) => {
+      const r = await fetch("/api/batches", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!r.ok) throw new Error("create batch failed");
+      return r.json();
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ["batches"] }),
+  });
+
+  const advanceBatch = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: BatchStatus }) => {
+      const r = await fetch(`/api/batches/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      if (!r.ok) throw new Error("update batch failed");
+      return r.json();
+    },
+    onMutate: async ({ id, status }) => {
+      await qc.cancelQueries({ queryKey: ["batches"] });
+      const prev = qc.getQueryData<Batch[]>(["batches"]);
+      qc.setQueryData<Batch[]>(["batches"], (old) =>
+        (old ?? []).map((b) => {
+          if (b.id !== id) return b;
+          const patch: Partial<Batch> = { status };
+          if (status === "consumed" || status === "discarded") {
+            patch.actualEnd = new Date().toISOString();
+          }
+          return { ...b, ...patch };
+        }),
+      );
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prev) qc.setQueryData(["batches"], ctx.prev);
+      toast.error("Could not update batch.");
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ["batches"] }),
+  });
+
+  const deleteBatch = useMutation({
+    mutationFn: async (id: string) => {
+      const r = await fetch(`/api/batches/${id}`, { method: "DELETE" });
+      if (!r.ok) throw new Error("delete batch failed");
+      return r.json();
+    },
+    onMutate: async (id) => {
+      await qc.cancelQueries({ queryKey: ["batches"] });
+      const prev = qc.getQueryData<Batch[]>(["batches"]);
+      qc.setQueryData<Batch[]>(["batches"], (old) =>
+        (old ?? []).filter((b) => b.id !== id),
+      );
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prev) qc.setQueryData(["batches"], ctx.prev);
+      toast.error("Could not delete batch.");
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ["batches"] }),
+  });
+
+  // -------- Pantry --------
+  const createPantryItem = useMutation({
+    mutationFn: async (data: {
+      name: string;
+      category: PantryCategory;
+      quantity: number;
+      unit: string;
+      lowStockAt?: number;
+      location?: string;
+      notes?: string;
+    }) => {
+      const r = await fetch("/api/pantry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!r.ok) throw new Error("create pantry failed");
+      return r.json();
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ["pantry"] }),
+  });
+
+  const adjustPantryItem = useMutation({
+    mutationFn: async ({ id, delta }: { id: string; delta: number }) => {
+      const items = qc.getQueryData<PantryItem[]>(["pantry"]) ?? [];
+      const item = items.find((i) => i.id === id);
+      if (!item) throw new Error("not found");
+      const next = Math.max(0, Number((item.quantity + delta).toFixed(2)));
+      const r = await fetch(`/api/pantry/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quantity: next }),
+      });
+      if (!r.ok) throw new Error("adjust pantry failed");
+      return r.json();
+    },
+    onMutate: async ({ id, delta }) => {
+      await qc.cancelQueries({ queryKey: ["pantry"] });
+      const prev = qc.getQueryData<PantryItem[]>(["pantry"]);
+      qc.setQueryData<PantryItem[]>(["pantry"], (old) =>
+        (old ?? []).map((i) =>
+          i.id === id
+            ? { ...i, quantity: Math.max(0, Number((i.quantity + delta).toFixed(2))) }
+            : i,
+        ),
+      );
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prev) qc.setQueryData(["pantry"], ctx.prev);
+      toast.error("Could not adjust quantity.");
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ["pantry"] }),
+  });
+
+  const deletePantryItem = useMutation({
+    mutationFn: async (id: string) => {
+      const r = await fetch(`/api/pantry/${id}`, { method: "DELETE" });
+      if (!r.ok) throw new Error("delete pantry failed");
+      return r.json();
+    },
+    onMutate: async (id) => {
+      await qc.cancelQueries({ queryKey: ["pantry"] });
+      const prev = qc.getQueryData<PantryItem[]>(["pantry"]);
+      qc.setQueryData<PantryItem[]>(["pantry"], (old) =>
+        (old ?? []).filter((i) => i.id !== id),
+      );
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prev) qc.setQueryData(["pantry"], ctx.prev);
+      toast.error("Could not delete pantry item.");
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ["pantry"] }),
+  });
+
   const reseed = () => {
     fetch("/api/seed", { method: "POST" })
       .then(() => {
         qc.invalidateQueries({ queryKey: ["tasks"] });
         qc.invalidateQueries({ queryKey: ["plantings"] });
+        qc.invalidateQueries({ queryKey: ["batches"] });
+        qc.invalidateQueries({ queryKey: ["pantry"] });
         toast.success("Demo data restored.");
       })
       .catch(() => toast.error("Could not reseed."));
@@ -245,7 +433,16 @@ export default function Home() {
 
   const tasks = tasksQ.data ?? [];
   const plantings = plantingsQ.data ?? [];
-  const loading = tasksQ.isLoading || plantingsQ.isLoading;
+  const batches = batchesQ.data ?? [];
+  const pantry = pantryQ.data ?? [];
+  const loading =
+    tasksQ.isLoading || plantingsQ.isLoading || batchesQ.isLoading || pantryQ.isLoading;
+
+  const openTaskCount = tasks.filter((t) => !t.completed).length;
+  const readyBatchCount = batches.filter(
+    (b) => b.status === "bottling" || b.status === "ready",
+  ).length;
+  const lowStockCount = pantry.filter(isLowStock).length;
 
   return (
     <div className="min-h-screen flex flex-col bg-background paper-texture">
@@ -257,20 +454,38 @@ export default function Home() {
             <TabsList className="bg-muted/60 p-1">
               <TabsTrigger value="dashboard" className="gap-1.5">
                 <LayoutDashboard className="h-3.5 w-3.5" />
-                Dashboard
+                <span className="hidden sm:inline">Dashboard</span>
               </TabsTrigger>
               <TabsTrigger value="chores" className="gap-1.5">
                 <ListTodo className="h-3.5 w-3.5" />
-                Chores
-                {tasks.filter((t) => !t.completed).length > 0 && (
-                  <span className="ml-1 rounded-full bg-accent/20 px-1.5 text-[10px] font-medium text-accent-foreground">
-                    {tasks.filter((t) => !t.completed).length}
+                <span className="hidden sm:inline">Chores</span>
+                {openTaskCount > 0 && (
+                  <span className="ml-0.5 rounded-full bg-accent/20 px-1.5 text-[10px] font-medium text-accent-foreground">
+                    {openTaskCount}
                   </span>
                 )}
               </TabsTrigger>
               <TabsTrigger value="plantings" className="gap-1.5">
                 <Sprout className="h-3.5 w-3.5" />
-                Plantings
+                <span className="hidden sm:inline">Sill &amp; balcony</span>
+              </TabsTrigger>
+              <TabsTrigger value="batches" className="gap-1.5">
+                <FlaskConical className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Cultures</span>
+                {readyBatchCount > 0 && (
+                  <span className="ml-0.5 rounded-full bg-accent/20 px-1.5 text-[10px] font-medium text-accent-foreground">
+                    {readyBatchCount}
+                  </span>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="pantry" className="gap-1.5">
+                <Archive className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Pantry</span>
+                {lowStockCount > 0 && (
+                  <span className="ml-0.5 rounded-full bg-accent/20 px-1.5 text-[10px] font-medium text-accent-foreground">
+                    {lowStockCount}
+                  </span>
+                )}
               </TabsTrigger>
             </TabsList>
 
@@ -293,7 +508,11 @@ export default function Home() {
               <Dashboard
                 tasks={tasks}
                 plantings={plantings}
+                batches={batches}
+                pantry={pantry}
                 onGoToChores={() => setTab("chores")}
+                onGoToBatches={() => setTab("batches")}
+                onGoToPantry={() => setTab("pantry")}
               />
             )}
           </TabsContent>
@@ -324,7 +543,7 @@ export default function Home() {
                 plantings={plantings}
                 onCreate={(data) => {
                   createPlanting.mutate(data, {
-                    onSuccess: () => toast.success("Planting added to the field log."),
+                    onSuccess: () => toast.success("Planting added to the counter garden."),
                     onError: () => toast.error("Could not add planting."),
                   });
                 }}
@@ -332,6 +551,42 @@ export default function Home() {
                   changePlantingStatus.mutate({ id, status })
                 }
                 onDelete={(id) => deletePlanting.mutate(id)}
+              />
+            )}
+          </TabsContent>
+
+          <TabsContent value="batches" className="m-0 focus-visible:outline-none">
+            {loading ? (
+              <LoadingCard />
+            ) : (
+              <Batches
+                batches={batches}
+                onCreate={(data) => {
+                  createBatch.mutate(data, {
+                    onSuccess: () => toast.success("Batch added to the counter."),
+                    onError: () => toast.error("Could not add batch."),
+                  });
+                }}
+                onAdvance={(id, status) => advanceBatch.mutate({ id, status })}
+                onDelete={(id) => deleteBatch.mutate(id)}
+              />
+            )}
+          </TabsContent>
+
+          <TabsContent value="pantry" className="m-0 focus-visible:outline-none">
+            {loading ? (
+              <LoadingCard />
+            ) : (
+              <Pantry
+                items={pantry}
+                onCreate={(data) => {
+                  createPantryItem.mutate(data, {
+                    onSuccess: () => toast.success("Added to the pantry."),
+                    onError: () => toast.error("Could not add pantry item."),
+                  });
+                }}
+                onAdjust={(id, delta) => adjustPantryItem.mutate({ id, delta })}
+                onDelete={(id) => deletePantryItem.mutate(id)}
               />
             )}
           </TabsContent>
@@ -344,7 +599,7 @@ export default function Home() {
             <Sparkles className="h-3.5 w-3.5 text-primary/70" />
             <span className="font-serif text-sm italic">Hearthstead</span>
             <span className="mx-1">·</span>
-            A quiet ledger for the homestead.
+            A quiet ledger for the apartment homestead.
           </p>
           <p>
             Data lives in a local SQLite file — refresh anytime with{' '}

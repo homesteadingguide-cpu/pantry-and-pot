@@ -13,7 +13,7 @@ model Task {
   id          String   @id @default(cuid())
   title       String
   notes       String?
-  category    String   @default("general") // general | animals | garden | maintenance | harvest
+  category    String   @default("general") // general | kitchen | balcony | pantry | brewing
   recurrence  String   @default("none")    // none | daily | weekly | monthly
   dueDate     DateTime?
   completed   Boolean  @default(false)
@@ -27,8 +27,8 @@ model Planting {
   id            String   @id @default(cuid())
   crop          String
   variety       String?
-  bed           String?  // e.g. "Bed 3", "Greenhouse", "Orchard"
-  status        String   @default("planned") // planned | seeded | transplanted | growing | harvest-ready | harvested
+  spot          String?  // e.g. "Balcony railing", "Kitchen window", "Grow shelf"
+  status        String   @default("planned") // planned | seeded | sprouted | growing | harvest-ready | harvested
   datePlanted   DateTime?
   expectedHarvest DateTime?
   actualHarvest DateTime?
@@ -36,4 +36,31 @@ model Planting {
   notes         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+model Batch {
+  id           String   @id @default(cuid())
+  type         String   // kombucha | sourdough | kraut | kefir | kimchi | vinegar | miso | other
+  name         String
+  status       String   @default("active") // active | fermenting | bottling | ready | consumed | discarded
+  startDate    DateTime?
+  expectedEnd  DateTime?
+  actualEnd    DateTime?
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model PantryItem {
+  id          String   @id @default(cuid())
+  name        String
+  category    String   @default("dry") // dry | ferment | preserve | canned | frozen | spice | supply
+  quantity    Float    @default(1)
+  unit        String   @default("jar") // jar | bag | kg | g | L | ml | bottle | pack
+  lowStockAt  Float?
+  location    String?  // e.g. "Top shelf", "Fridge door", "Root cellar"
+  dateAdded   DateTime @default(now())
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

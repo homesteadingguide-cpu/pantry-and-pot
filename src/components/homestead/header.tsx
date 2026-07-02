@@ -24,10 +24,10 @@ export function Header() {
                 Hearthstead
               </p>
               <h1 className="font-serif text-3xl sm:text-4xl font-semibold leading-tight text-foreground">
-                The Homestead Journal
+                The Apartment Homestead
               </h1>
               <p className="mt-1 text-sm text-muted-foreground">
-                A quiet ledger for chores, plantings, and the turn of the seasons.
+                A quiet ledger for the balcony, the counter, and the jar on the shelf.
               </p>
             </div>
           </div>
@@ -39,15 +39,15 @@ export function Header() {
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1.5 text-primary ring-1 ring-primary/30">
               <Leaf className="h-3.5 w-3.5" />
-              {seasonOf()} work
+              {seasonOf()} on the sill
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-3 py-1.5 text-accent-foreground ring-1 ring-accent/30">
               <Cloud className="h-3.5 w-3.5" />
-              Mild &amp; fair
+              Kitchen 22°C
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-muted-foreground ring-1 ring-border">
               <MapPin className="h-3.5 w-3.5" />
-              Hillside plot
+              2nd-floor flat
             </span>
           </div>
         </div>

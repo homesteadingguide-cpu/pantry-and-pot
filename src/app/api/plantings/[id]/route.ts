@@ -14,7 +14,7 @@ export async function PATCH(
   const patch: Record<string, unknown> = {};
   if (typeof body.crop === "string") patch.crop = body.crop.trim();
   if (body.variety !== undefined) patch.variety = body.variety?.trim() || null;
-  if (body.bed !== undefined) patch.bed = body.bed?.trim() || null;
+  if (body.spot !== undefined) patch.spot = body.spot?.trim() || null;
   if (typeof body.status === "string") patch.status = body.status;
   if (body.quantity !== undefined) patch.quantity = Number(body.quantity) || 0;
   if (body.notes !== undefined) patch.notes = body.notes?.trim() || null;
