@@ -14,6 +14,7 @@ export async function POST() {
   await db.planting.deleteMany();
   await db.batch.deleteMany();
   await db.pantryItem.deleteMany();
+  await db.shoppingItem.deleteMany();
 
   const tasks = [
     // Kitchen routines
@@ -50,12 +51,12 @@ export async function POST() {
   ];
 
   const batches = [
-    { type: "sourdough", name: "Bubbles — the starter", status: "active", startDate: day(-1), notes: "Fed twice daily at room temp, or weekly from the fridge." },
+    { type: "sourdough", name: "Bubbles — the starter", status: "active", startDate: day(-420), lastFedAt: day(-1), notes: "Fed twice daily at room temp, or weekly from the fridge." },
     { type: "kombucha", name: "Raspberry-ginger 2F", status: "fermenting", startDate: day(-2), expectedEnd: day(1), notes: "Swing-top bottle at room temp. Burp daily." },
-    { type: "kombucha", name: "SCOBY hotel", status: "active", startDate: day(-28), notes: "Back-up cultures in sweet tea. Top up every 4 weeks." },
+    { type: "kombucha", name: "SCOBY hotel", status: "active", startDate: day(-200), lastFedAt: day(-28), notes: "Back-up cultures in sweet tea. Top up every 4 weeks." },
     { type: "kraut", name: "Green cabbage & caraway", status: "fermenting", startDate: day(-14), expectedEnd: day(0), notes: "2% salt by weight. Burp daily." },
     { type: "kimchi", name: "Napa & daikon batch", status: "fermenting", startDate: day(-3), expectedEnd: day(7), notes: "Counter for 3 days, then fridge." },
-    { type: "kefir", name: "Milk kefir grains", status: "active", startDate: day(-2), notes: "Daily feed — 1 tbsp grains per cup milk." },
+    { type: "kefir", name: "Milk kefir grains", status: "active", startDate: day(-90), lastFedAt: day(0), notes: "Daily feed — 1 tbsp grains per cup milk." },
     { type: "vinegar", name: "Apple scrap vinegar", status: "fermenting", startDate: day(-30), expectedEnd: day(3), notes: "Stir daily until mother forms, then cover with cloth." },
     { type: "sourdough", name: "Poolish for tomorrow’s loaf", status: "active", startDate: day(0), expectedEnd: day(1), notes: "100g flour, 100g water, pinch of starter." },
     { type: "kombucha", name: "Original SCOBY batch (1F)", status: "ready", startDate: day(-21), expectedEnd: day(-1), notes: "Moved to fridge — drink within 2 weeks." },

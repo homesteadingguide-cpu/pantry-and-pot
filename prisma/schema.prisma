@@ -46,6 +46,7 @@ model Batch {
   startDate    DateTime?
   expectedEnd  DateTime?
   actualEnd    DateTime?
+  lastFedAt    DateTime?  // Most recent feeding/refresh — separate from startDate (the batch's creation)
   notes        String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -63,6 +64,18 @@ model PantryItem {
   notes       String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model ShoppingItem {
+  id           String   @id @default(cuid())
+  name         String
+  quantity     Float    @default(1)
+  unit         String   @default("pack")
+  notes        String?
+  gotAt        DateTime?  // Set when marked as purchased
+  pantryItemId String?   // Optional link back to a PantryItem (for restock suggestions)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 // Simple key/value store for app settings (location, units, etc.)

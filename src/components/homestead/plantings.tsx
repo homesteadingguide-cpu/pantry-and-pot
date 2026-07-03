@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Apple, Leaf, Plus, Sprout, Trash2 } from "lucide-react";
+import { Apple, Leaf, Pencil, Plus, Sprout, Trash2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,6 +45,16 @@ interface Props {
     datePlanted?: string;
     expectedHarvest?: string;
   }) => void;
+  onEdit: (id: string, data: {
+    crop: string;
+    variety?: string;
+    spot?: string;
+    status: PlantingStatus;
+    quantity: number;
+    notes?: string;
+    datePlanted?: string;
+    expectedHarvest?: string;
+  }) => void;
   onStatusChange: (id: string, status: PlantingStatus) => void;
   onDelete: (id: string) => void;
 }
@@ -52,6 +62,7 @@ interface Props {
 export function Plantings({
   plantings,
   onCreate,
+  onEdit,
   onStatusChange,
   onDelete,
 }: Props) {
@@ -78,11 +89,15 @@ export function Plantings({
               New planting
             </Button>
           </DialogTrigger>
-          <AddPlantingDialog
+          <PlantingFormDialog
+            title="Add a planting"
+            description="A single pot, jar, or tray. Add as many as you like."
+            submitLabel="Add to counter garden"
             onClose={() => setOpen(false)}
-            onCreate={(data) => {
+            onSubmit={(data) => {
               onCreate(data);
               setOpen(false);
+              toast.success("Planting added to the counter garden.");
             }}
           />
         </Dialog>
@@ -113,6 +128,7 @@ export function Plantings({
                   <PlantingCard
                     key={p.id}
                     planting={p}
+                    onEdit={onEdit}
                     onStatusChange={onStatusChange}
                     onDelete={onDelete}
                   />
@@ -128,19 +144,31 @@ export function Plantings({
 
 function PlantingCard({
   planting,
+  onEdit,
   onStatusChange,
   onDelete,
 }: {
   planting: Planting;
+  onEdit: (id: string, data: {
+    crop: string;
+    variety?: string;
+    spot?: string;
+    status: PlantingStatus;
+    quantity: number;
+    notes?: string;
+    datePlanted?: string;
+    expectedHarvest?: string;
+  }) => void;
   onStatusChange: (id: string, status: PlantingStatus) => void;
   onDelete: (id: string) => void;
 }) {
   const Icon = planting.status === "harvested" ? Apple : Sprout;
+  const [editOpen, setEditOpen] = useState(false);
   const nextStatus: PlantingStatus | null = (() => {
     const order: PlantingStatus[] = [
       "planned",
       "seeded",
-      "transplanted",
+      "sprouted",
       "growing",
       "harvest-ready",
       "harvested",
@@ -169,15 +197,40 @@ function PlantingCard({
               )}
             </div>
           </div>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="h-7 w-7 text-muted-foreground opacity-0 transition group-hover:opacity-100 hover:text-destructive"
-            onClick={() => onDelete(planting.id)}
-            aria-label="Delete planting"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
+          <div className="flex shrink-0 items-center opacity-0 transition group-hover:opacity-100">
+            <Dialog open={editOpen} onOpenChange={setEditOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-7 w-7 text-muted-foreground hover:text-primary"
+                  aria-label="Edit planting"
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                </Button>
+              </DialogTrigger>
+              <PlantingFormDialog
+                title="Edit planting"
+                description="Update the planting details."
+                submitLabel="Save changes"
+                initial={planting}
+                onClose={() => setEditOpen(false)}
+                onSubmit={(data) => {
+                  onEdit(planting.id, data);
+                  setEditOpen(false);
+                }}
+              />
+            </Dialog>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-7 w-7 text-muted-foreground hover:text-destructive"
+              onClick={() => onDelete(planting.id)}
+              aria-label="Delete planting"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-2 text-xs">
@@ -212,7 +265,7 @@ function PlantingCard({
           >
             Mark as{" "}
             {PLANTING_STATUSES.find((s) => s.value === nextStatus)?.label.toLowerCase()}
-            <Leaf className="ml-1.5 h-3.5 w-3.5" />
+            <Leaf className="h-3.5 w-3.5" />
           </Button>
         )}
       </CardContent>
@@ -231,12 +284,29 @@ function Field({ label, value }: { label: string; value: string }) {
   );
 }
 
-function AddPlantingDialog({
+function PlantingFormDialog({
+  title,
+  description,
+  submitLabel,
+  initial,
   onClose,
-  onCreate,
+  onSubmit,
 }: {
+  title: string;
+  description: string;
+  submitLabel: string;
+  initial?: {
+    crop: string;
+    variety?: string | null;
+    spot?: string | null;
+    status: PlantingStatus;
+    quantity: number;
+    notes?: string | null;
+    datePlanted?: string | null;
+    expectedHarvest?: string | null;
+  };
   onClose: () => void;
-  onCreate: (data: {
+  onSubmit: (data: {
     crop: string;
     variety?: string;
     spot?: string;
@@ -247,21 +317,28 @@ function AddPlantingDialog({
     expectedHarvest?: string;
   }) => void;
 }) {
-  const [crop, setCrop] = useState("");
-  const [variety, setVariety] = useState("");
-  const [spot, setSpot] = useState("");
-  const [status, setStatus] = useState<PlantingStatus>("planned");
-  const [quantity, setQuantity] = useState("1");
-  const [datePlanted, setDatePlanted] = useState("");
-  const [expectedHarvest, setExpectedHarvest] = useState("");
-  const [notes, setNotes] = useState("");
+  const isoToInput = (iso?: string | null) => {
+    if (!iso) return "";
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  };
+
+  const [crop, setCrop] = useState(initial?.crop ?? "");
+  const [variety, setVariety] = useState(initial?.variety ?? "");
+  const [spot, setSpot] = useState(initial?.spot ?? "");
+  const [status, setStatus] = useState<PlantingStatus>(initial?.status ?? "planned");
+  const [quantity, setQuantity] = useState(String(initial?.quantity ?? 1));
+  const [datePlanted, setDatePlanted] = useState(isoToInput(initial?.datePlanted));
+  const [expectedHarvest, setExpectedHarvest] = useState(isoToInput(initial?.expectedHarvest));
+  const [notes, setNotes] = useState(initial?.notes ?? "");
 
   const submit = () => {
     if (!crop.trim()) {
       toast.error("Give the crop a name first.");
       return;
     }
-    onCreate({
+    onSubmit({
       crop: crop.trim(),
       variety: variety.trim() || undefined,
       spot: spot.trim() || undefined,
@@ -272,16 +349,13 @@ function AddPlantingDialog({
       expectedHarvest: expectedHarvest || undefined,
     });
     onClose();
-    toast.success("Planting added to the counter garden.");
   };
 
   return (
     <DialogContent className="sm:max-w-md">
       <DialogHeader>
-        <DialogTitle className="font-serif text-xl">Add a planting</DialogTitle>
-        <DialogDescription>
-          A single pot, jar, or tray. Add as many as you like.
-        </DialogDescription>
+        <DialogTitle className="font-serif text-xl">{title}</DialogTitle>
+        <DialogDescription>{description}</DialogDescription>
       </DialogHeader>
       <div className="space-y-3">
         <div className="grid grid-cols-2 gap-3">
@@ -289,7 +363,7 @@ function AddPlantingDialog({
             <Label htmlFor="crop">Crop</Label>
             <Input
               id="crop"
-              placeholder="e.g. Tomato"
+              placeholder="e.g. Basil"
               value={crop}
               onChange={(e) => setCrop(e.target.value)}
               autoFocus
@@ -299,7 +373,7 @@ function AddPlantingDialog({
             <Label htmlFor="variety">Variety</Label>
             <Input
               id="variety"
-              placeholder="e.g. San Marzano"
+              placeholder="e.g. Genovese"
               value={variety}
               onChange={(e) => setVariety(e.target.value)}
             />
@@ -376,7 +450,7 @@ function AddPlantingDialog({
         <Button variant="ghost" onClick={onClose}>
           Cancel
         </Button>
-        <Button onClick={submit}>Add to counter garden</Button>
+        <Button onClick={submit}>{submitLabel}</Button>
       </DialogFooter>
     </DialogContent>
   );

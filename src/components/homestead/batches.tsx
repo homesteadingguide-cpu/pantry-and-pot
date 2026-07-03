@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
   FlaskConical,
   Leaf,
+  Pencil,
   Plus,
   Sprout,
   Trash2,
@@ -52,12 +53,20 @@ interface Props {
     expectedEnd?: string;
     notes?: string;
   }) => void;
+  onEdit: (id: string, data: {
+    type: BatchType;
+    name: string;
+    status: BatchStatus;
+    startDate?: string;
+    expectedEnd?: string;
+    notes?: string;
+  }) => void;
   onAdvance: (id: string, status: BatchStatus) => void;
   onFeed?: (id: string) => void;
   onDelete: (id: string) => void;
 }
 
-export function Batches({ batches, onCreate, onAdvance, onFeed, onDelete }: Props) {
+export function Batches({ batches, onCreate, onEdit, onAdvance, onFeed, onDelete }: Props) {
   const [open, setOpen] = useState(false);
 
   const grouped = BATCH_STATUSES.map((s) => ({
@@ -81,11 +90,15 @@ export function Batches({ batches, onCreate, onAdvance, onFeed, onDelete }: Prop
               New batch
             </Button>
           </DialogTrigger>
-          <AddBatchDialog
+          <BatchFormDialog
+            title="Start a new batch"
+            description="Kombucha, sourdough, kraut, kefir, kimchi — track each one from start to jar."
+            submitLabel="Add to counter"
             onClose={() => setOpen(false)}
-            onCreate={(data) => {
+            onSubmit={(data) => {
               onCreate(data);
               setOpen(false);
+              toast.success("Batch added to the counter.");
             }}
           />
         </Dialog>
@@ -116,6 +129,7 @@ export function Batches({ batches, onCreate, onAdvance, onFeed, onDelete }: Prop
                   <BatchCard
                     key={b.id}
                     batch={b}
+                    onEdit={onEdit}
                     onAdvance={onAdvance}
                     onFeed={onFeed}
                     onDelete={onDelete}
@@ -132,16 +146,26 @@ export function Batches({ batches, onCreate, onAdvance, onFeed, onDelete }: Prop
 
 function BatchCard({
   batch,
+  onEdit,
   onAdvance,
   onFeed,
   onDelete,
 }: {
   batch: Batch;
+  onEdit: (id: string, data: {
+    type: BatchType;
+    name: string;
+    status: BatchStatus;
+    startDate?: string;
+    expectedEnd?: string;
+    notes?: string;
+  }) => void;
   onAdvance: (id: string, status: BatchStatus) => void;
   onFeed?: (id: string) => void;
   onDelete: (id: string) => void;
 }) {
   const Icon = FlaskConical;
+  const [editOpen, setEditOpen] = useState(false);
   const next = BATCH_NEXT[batch.status];
   const nextLabel = next
     ? BATCH_STATUSES.find((s) => s.value === next)?.label.toLowerCase()
@@ -164,15 +188,40 @@ function BatchCard({
               </p>
             </div>
           </div>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="h-7 w-7 text-muted-foreground opacity-0 transition group-hover:opacity-100 hover:text-destructive"
-            onClick={() => onDelete(batch.id)}
-            aria-label="Delete batch"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
+          <div className="flex shrink-0 items-center opacity-0 transition group-hover:opacity-100">
+            <Dialog open={editOpen} onOpenChange={setEditOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-7 w-7 text-muted-foreground hover:text-primary"
+                  aria-label="Edit batch"
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                </Button>
+              </DialogTrigger>
+              <BatchFormDialog
+                title="Edit batch"
+                description="Update the batch details."
+                submitLabel="Save changes"
+                initial={batch}
+                onClose={() => setEditOpen(false)}
+                onSubmit={(data) => {
+                  onEdit(batch.id, data);
+                  setEditOpen(false);
+                }}
+              />
+            </Dialog>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-7 w-7 text-muted-foreground hover:text-destructive"
+              onClick={() => onDelete(batch.id)}
+              aria-label="Delete batch"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          </div>
         </div>
 
         <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
@@ -186,6 +235,16 @@ function BatchCard({
             }
           />
         </div>
+
+        {/* For fed cultures, show last-fed date as a third field. */}
+        {showFeedField(batch) && (
+          <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
+            <Field
+              label={batch.type === "sourdough" ? "Last fed" : "Last refreshed"}
+              value={batch.lastFedAt ? formatRelative(batch.lastFedAt) : "—"}
+            />
+          </div>
+        )}
 
         {batch.notes && (
           <p className="mt-3 rounded-md bg-muted/40 px-2.5 py-1.5 text-xs text-muted-foreground">
@@ -223,15 +282,16 @@ function BatchCard({
             </Button>
           )}
         </div>
-
-        {batch.status === "active" && batch.startDate && (
-          <p className="mt-2 text-center text-[11px] text-muted-foreground">
-            Last {batch.type === "sourdough" ? "fed" : "refreshed"}{" "}
-            {formatRelative(batch.startDate)}
-          </p>
-        )}
       </CardContent>
     </Card>
+  );
+}
+
+function showFeedField(batch: Batch): boolean {
+  return (
+    batch.type === "sourdough" ||
+    batch.type === "kefir" ||
+    batch.type === "kombucha"
   );
 }
 
@@ -246,12 +306,27 @@ function Field({ label, value }: { label: string; value: string }) {
   );
 }
 
-function AddBatchDialog({
+function BatchFormDialog({
+  title,
+  description,
+  submitLabel,
+  initial,
   onClose,
-  onCreate,
+  onSubmit,
 }: {
+  title: string;
+  description: string;
+  submitLabel: string;
+  initial?: {
+    type: BatchType;
+    name: string;
+    status: BatchStatus;
+    startDate?: string | null;
+    expectedEnd?: string | null;
+    notes?: string | null;
+  };
   onClose: () => void;
-  onCreate: (data: {
+  onSubmit: (data: {
     type: BatchType;
     name: string;
     status: BatchStatus;
@@ -260,19 +335,26 @@ function AddBatchDialog({
     notes?: string;
   }) => void;
 }) {
-  const [type, setType] = useState<BatchType>("kombucha");
-  const [name, setName] = useState("");
-  const [status, setStatus] = useState<BatchStatus>("active");
-  const [startDate, setStartDate] = useState("");
-  const [expectedEnd, setExpectedEnd] = useState("");
-  const [notes, setNotes] = useState("");
+  const isoToInput = (iso?: string | null) => {
+    if (!iso) return "";
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  };
+
+  const [type, setType] = useState<BatchType>(initial?.type ?? "kombucha");
+  const [name, setName] = useState(initial?.name ?? "");
+  const [status, setStatus] = useState<BatchStatus>(initial?.status ?? "active");
+  const [startDate, setStartDate] = useState(isoToInput(initial?.startDate));
+  const [expectedEnd, setExpectedEnd] = useState(isoToInput(initial?.expectedEnd));
+  const [notes, setNotes] = useState(initial?.notes ?? "");
 
   const submit = () => {
     if (!name.trim()) {
       toast.error("Give the batch a name first.");
       return;
     }
-    onCreate({
+    onSubmit({
       type,
       name: name.trim(),
       status,
@@ -281,16 +363,13 @@ function AddBatchDialog({
       expectedEnd: expectedEnd || undefined,
     });
     onClose();
-    toast.success("Batch added to the counter.");
   };
 
   return (
     <DialogContent className="sm:max-w-md">
       <DialogHeader>
-        <DialogTitle className="font-serif text-xl">Start a new batch</DialogTitle>
-        <DialogDescription>
-          Kombucha, sourdough, kraut, kefir, kimchi — track each one from start to jar.
-        </DialogDescription>
+        <DialogTitle className="font-serif text-xl">{title}</DialogTitle>
+        <DialogDescription>{description}</DialogDescription>
       </DialogHeader>
       <div className="space-y-3">
         <div className="grid grid-cols-2 gap-3">
@@ -370,7 +449,7 @@ function AddBatchDialog({
         <Button variant="ghost" onClick={onClose}>
           Cancel
         </Button>
-        <Button onClick={submit}>Add to counter</Button>
+        <Button onClick={submit}>{submitLabel}</Button>
       </DialogFooter>
     </DialogContent>
   );

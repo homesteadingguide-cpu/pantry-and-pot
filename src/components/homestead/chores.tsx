@@ -8,6 +8,7 @@ import {
   FlaskConical,
   Archive,
   Leaf,
+  Pencil,
   Plus,
   Sprout,
   Trash2,
@@ -67,9 +68,17 @@ interface Props {
     priority: TaskPriority;
     dueDate?: string;
   }) => void;
+  onEdit: (id: string, data: {
+    title: string;
+    notes?: string;
+    category: TaskCategory;
+    recurrence: TaskRecurrence;
+    priority: TaskPriority;
+    dueDate?: string;
+  }) => void;
 }
 
-export function Chores({ tasks, onToggle, onDelete, onCreate }: Props) {
+export function Chores({ tasks, onToggle, onDelete, onCreate, onEdit }: Props) {
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState<TaskCategory | "all">("all");
 
@@ -95,11 +104,15 @@ export function Chores({ tasks, onToggle, onDelete, onCreate }: Props) {
               New chore
             </Button>
           </DialogTrigger>
-          <AddChoreDialog
+          <ChoreFormDialog
+            title="Add a chore"
+            description="Recurring chores will show on their due day each cycle."
+            submitLabel="Add to ledger"
             onClose={() => setOpen(false)}
-            onCreate={(data) => {
+            onSubmit={(data) => {
               onCreate(data);
               setOpen(false);
+              toast.success("Chore added to the ledger.");
             }}
           />
         </Dialog>
@@ -140,6 +153,7 @@ export function Chores({ tasks, onToggle, onDelete, onCreate }: Props) {
                   task={t}
                   onToggle={onToggle}
                   onDelete={onDelete}
+                  onEdit={onEdit}
                 />
               ))
             )}
@@ -162,6 +176,7 @@ export function Chores({ tasks, onToggle, onDelete, onCreate }: Props) {
                   task={t}
                   onToggle={onToggle}
                   onDelete={onDelete}
+                  onEdit={onEdit}
                 />
               ))
             )}
@@ -176,12 +191,22 @@ function TaskRow({
   task,
   onToggle,
   onDelete,
+  onEdit,
 }: {
   task: Task;
   onToggle: (id: string, completed: boolean) => void;
   onDelete: (id: string) => void;
+  onEdit: (id: string, data: {
+    title: string;
+    notes?: string;
+    category: TaskCategory;
+    recurrence: TaskRecurrence;
+    priority: TaskPriority;
+    dueDate?: string;
+  }) => void;
 }) {
   const Icon = CATEGORY_ICONS[task.category] ?? Leaf;
+  const [editOpen, setEditOpen] = useState(false);
   return (
     <div className="group flex items-start gap-3 rounded-md border border-border/70 bg-card/60 px-3 py-2.5 transition hover:bg-card">
       <button
@@ -223,15 +248,40 @@ function TaskRow({
           <p className="mt-1 text-xs text-muted-foreground">{task.notes}</p>
         )}
       </div>
-      <Button
-        size="icon"
-        variant="ghost"
-        className="h-7 w-7 text-muted-foreground opacity-0 transition group-hover:opacity-100 hover:text-destructive"
-        onClick={() => onDelete(task.id)}
-        aria-label="Delete task"
-      >
-        <Trash2 className="h-3.5 w-3.5" />
-      </Button>
+      <div className="flex shrink-0 items-center opacity-0 transition group-hover:opacity-100">
+        <Dialog open={editOpen} onOpenChange={setEditOpen}>
+          <DialogTrigger asChild>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-7 w-7 text-muted-foreground hover:text-primary"
+              aria-label="Edit task"
+            >
+              <Pencil className="h-3.5 w-3.5" />
+            </Button>
+          </DialogTrigger>
+          <ChoreFormDialog
+            title="Edit chore"
+            description="Update the chore details."
+            submitLabel="Save changes"
+            initial={task}
+            onClose={() => setEditOpen(false)}
+            onSubmit={(data) => {
+              onEdit(task.id, data);
+              setEditOpen(false);
+            }}
+          />
+        </Dialog>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-7 w-7 text-muted-foreground hover:text-destructive"
+          onClick={() => onDelete(task.id)}
+          aria-label="Delete task"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </Button>
+      </div>
     </div>
   );
 }
@@ -269,12 +319,27 @@ function FilterChip({
   );
 }
 
-function AddChoreDialog({
+function ChoreFormDialog({
+  title,
+  description,
+  submitLabel,
+  initial,
   onClose,
-  onCreate,
+  onSubmit,
 }: {
+  title: string;
+  description: string;
+  submitLabel: string;
+  initial?: {
+    title: string;
+    notes?: string | null;
+    category: TaskCategory;
+    recurrence: TaskRecurrence;
+    priority: TaskPriority;
+    dueDate?: string | null;
+  };
   onClose: () => void;
-  onCreate: (data: {
+  onSubmit: (data: {
     title: string;
     notes?: string;
     category: TaskCategory;
@@ -283,20 +348,27 @@ function AddChoreDialog({
     dueDate?: string;
   }) => void;
 }) {
-  const [title, setTitle] = useState("");
-  const [notes, setNotes] = useState("");
-  const [category, setCategory] = useState<TaskCategory>("general");
-  const [recurrence, setRecurrence] = useState<TaskRecurrence>("none");
-  const [priority, setPriority] = useState<TaskPriority>("normal");
-  const [dueDate, setDueDate] = useState("");
+  const isoToInput = (iso?: string | null) => {
+    if (!iso) return "";
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  };
+
+  const [tTitle, setTitle] = useState(initial?.title ?? "");
+  const [notes, setNotes] = useState(initial?.notes ?? "");
+  const [category, setCategory] = useState<TaskCategory>(initial?.category ?? "general");
+  const [recurrence, setRecurrence] = useState<TaskRecurrence>(initial?.recurrence ?? "none");
+  const [priority, setPriority] = useState<TaskPriority>(initial?.priority ?? "normal");
+  const [dueDate, setDueDate] = useState(isoToInput(initial?.dueDate));
 
   const submit = () => {
-    if (!title.trim()) {
+    if (!tTitle.trim()) {
       toast.error("Give the chore a name first.");
       return;
     }
-    onCreate({
-      title: title.trim(),
+    onSubmit({
+      title: tTitle.trim(),
       notes: notes.trim() || undefined,
       category,
       recurrence,
@@ -304,16 +376,13 @@ function AddChoreDialog({
       dueDate: dueDate || undefined,
     });
     onClose();
-    toast.success("Chore added to the ledger.");
   };
 
   return (
     <DialogContent className="sm:max-w-md">
       <DialogHeader>
-        <DialogTitle className="font-serif text-xl">Add a chore</DialogTitle>
-        <DialogDescription>
-          Recurring chores will show on their due day each cycle.
-        </DialogDescription>
+        <DialogTitle className="font-serif text-xl">{title}</DialogTitle>
+        <DialogDescription>{description}</DialogDescription>
       </DialogHeader>
       <div className="space-y-3">
         <div className="space-y-1.5">
@@ -321,7 +390,7 @@ function AddChoreDialog({
           <Input
             id="title"
             placeholder="e.g. Feed the sourdough starter"
-            value={title}
+            value={tTitle}
             onChange={(e) => setTitle(e.target.value)}
             autoFocus
           />
@@ -399,7 +468,7 @@ function AddChoreDialog({
         <Button variant="ghost" onClick={onClose}>
           Cancel
         </Button>
-        <Button onClick={submit}>Add to ledger</Button>
+        <Button onClick={submit}>{submitLabel}</Button>
       </DialogFooter>
     </DialogContent>
   );

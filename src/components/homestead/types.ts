@@ -77,7 +77,19 @@ export interface Batch {
   startDate: string | null;
   expectedEnd: string | null;
   actualEnd: string | null;
+  lastFedAt: string | null;
   notes: string | null;
+  createdAt: string;
+}
+
+export interface ShoppingItem {
+  id: string;
+  name: string;
+  quantity: number;
+  unit: string;
+  notes: string | null;
+  gotAt: string | null;
+  pantryItemId: string | null;
   createdAt: string;
 }
 

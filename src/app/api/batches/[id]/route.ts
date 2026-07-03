@@ -25,9 +25,12 @@ export async function PATCH(
   if (body.actualEnd !== undefined) {
     patch.actualEnd = body.actualEnd ? new Date(body.actualEnd) : null;
   }
-  // "Mark as fed" — refresh startDate to now for an active culture.
+  if (body.lastFedAt !== undefined) {
+    patch.lastFedAt = body.lastFedAt ? new Date(body.lastFedAt) : null;
+  }
+  // "Mark as fed" — set lastFedAt to now (does NOT change startDate, the batch's creation).
   if (body.markFed === true) {
-    patch.startDate = new Date();
+    patch.lastFedAt = new Date();
   }
   // If moving to "consumed" or "discarded", set actualEnd automatically.
   if (

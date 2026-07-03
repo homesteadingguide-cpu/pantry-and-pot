@@ -7,11 +7,23 @@ import {
   FlaskConical,
   LayoutDashboard,
   ListTodo,
+  ShoppingCart,
   Sprout,
   Sparkles,
 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/homestead/header";
@@ -20,6 +32,7 @@ import { Chores } from "@/components/homestead/chores";
 import { Plantings } from "@/components/homestead/plantings";
 import { Batches } from "@/components/homestead/batches";
 import { Pantry } from "@/components/homestead/pantry";
+import { Shopping } from "@/components/homestead/shopping";
 import {
   type Batch,
   type BatchStatus,
@@ -28,6 +41,7 @@ import {
   type PantryItem,
   type Planting,
   type PlantingStatus,
+  type ShoppingItem,
   type Task,
   type TaskCategory,
   type TaskPriority,
@@ -35,7 +49,7 @@ import {
   isLowStock,
 } from "@/components/homestead/types";
 
-type TabKey = "dashboard" | "chores" | "plantings" | "batches" | "pantry";
+type TabKey = "dashboard" | "chores" | "plantings" | "batches" | "pantry" | "shopping";
 
 async function fetchJson<T>(url: string): Promise<T> {
   const r = await fetch(url, { cache: "no-store" });
@@ -71,6 +85,7 @@ export default function Home() {
             qc.invalidateQueries({ queryKey: ["plantings"] });
             qc.invalidateQueries({ queryKey: ["batches"] });
             qc.invalidateQueries({ queryKey: ["pantry"] });
+            qc.invalidateQueries({ queryKey: ["shopping"] });
           }
         }
       } finally {
@@ -97,6 +112,11 @@ export default function Home() {
   const pantryQ = useQuery({
     queryKey: ["pantry"],
     queryFn: () => fetchJson<PantryItem[]>("/api/pantry"),
+    enabled: seeded,
+  });
+  const shoppingQ = useQuery({
+    queryKey: ["shopping"],
+    queryFn: () => fetchJson<ShoppingItem[]>("/api/shopping"),
     enabled: seeded,
   });
 
@@ -187,6 +207,32 @@ export default function Home() {
     onSettled: () => qc.invalidateQueries({ queryKey: ["tasks"] }),
   });
 
+  const editTask = useMutation({
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: {
+        title: string;
+        notes?: string;
+        category: TaskCategory;
+        recurrence: TaskRecurrence;
+        priority: TaskPriority;
+        dueDate?: string;
+      };
+    }) => {
+      const r = await fetch(`/api/tasks/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!r.ok) throw new Error("edit task failed");
+      return r.json();
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ["tasks"] }),
+  });
+
   // -------- Plantings --------
   const createPlanting = useMutation({
     mutationFn: async (data: {
@@ -205,6 +251,34 @@ export default function Home() {
         body: JSON.stringify(data),
       });
       if (!r.ok) throw new Error("create planting failed");
+      return r.json();
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ["plantings"] }),
+  });
+
+  const editPlanting = useMutation({
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: {
+        crop: string;
+        variety?: string;
+        spot?: string;
+        status: PlantingStatus;
+        quantity: number;
+        notes?: string;
+        datePlanted?: string;
+        expectedHarvest?: string;
+      };
+    }) => {
+      const r = await fetch(`/api/plantings/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!r.ok) throw new Error("edit planting failed");
       return r.json();
     },
     onSettled: () => qc.invalidateQueries({ queryKey: ["plantings"] }),
@@ -290,6 +364,32 @@ export default function Home() {
     onSettled: () => qc.invalidateQueries({ queryKey: ["batches"] }),
   });
 
+  const editBatch = useMutation({
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: {
+        type: BatchType;
+        name: string;
+        status: BatchStatus;
+        startDate?: string;
+        expectedEnd?: string;
+        notes?: string;
+      };
+    }) => {
+      const r = await fetch(`/api/batches/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!r.ok) throw new Error("edit batch failed");
+      return r.json();
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ["batches"] }),
+  });
+
   const advanceBatch = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: BatchStatus }) => {
       const r = await fetch(`/api/batches/${id}`, {
@@ -337,7 +437,9 @@ export default function Home() {
       const prev = qc.getQueryData<Batch[]>(["batches"]);
       const nowIso = new Date().toISOString();
       qc.setQueryData<Batch[]>(["batches"], (old) =>
-        (old ?? []).map((b) => (b.id === id ? { ...b, startDate: nowIso } : b)),
+        (old ?? []).map((b) =>
+          b.id === id ? { ...b, lastFedAt: nowIso } : b,
+        ),
       );
       return { prev };
     },
@@ -445,6 +547,167 @@ export default function Home() {
     onSettled: () => qc.invalidateQueries({ queryKey: ["pantry"] }),
   });
 
+  const editPantryItem = useMutation({
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: {
+        name: string;
+        category: PantryCategory;
+        quantity: number;
+        unit: string;
+        lowStockAt?: number;
+        location?: string;
+        notes?: string;
+      };
+    }) => {
+      const r = await fetch(`/api/pantry/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!r.ok) throw new Error("edit pantry failed");
+      return r.json();
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ["pantry"] }),
+  });
+
+  // -------- Shopping --------
+  const createShoppingItem = useMutation({
+    mutationFn: async (data: {
+      name: string;
+      quantity?: number;
+      unit?: string;
+      notes?: string;
+      pantryItemId?: string;
+    }) => {
+      const r = await fetch("/api/shopping", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!r.ok) throw new Error("create shopping failed");
+      return r.json();
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ["shopping"] }),
+  });
+
+  const adjustShoppingItem = useMutation({
+    mutationFn: async ({ id, delta }: { id: string; delta: number }) => {
+      const items = qc.getQueryData<ShoppingItem[]>(["shopping"]) ?? [];
+      const item = items.find((i) => i.id === id);
+      if (!item) throw new Error("not found");
+      const next = Math.max(0, Number((item.quantity + delta).toFixed(2)));
+      const r = await fetch(`/api/shopping/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quantity: next }),
+      });
+      if (!r.ok) throw new Error("adjust shopping failed");
+      return r.json();
+    },
+    onMutate: async ({ id, delta }) => {
+      await qc.cancelQueries({ queryKey: ["shopping"] });
+      const prev = qc.getQueryData<ShoppingItem[]>(["shopping"]);
+      qc.setQueryData<ShoppingItem[]>(["shopping"], (old) =>
+        (old ?? []).map((i) =>
+          i.id === id
+            ? { ...i, quantity: Math.max(0, Number((i.quantity + delta).toFixed(2))) }
+            : i,
+        ),
+      );
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prev) qc.setQueryData(["shopping"], ctx.prev);
+      toast.error("Could not adjust quantity.");
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ["shopping"] }),
+  });
+
+  const toggleShoppingGot = useMutation({
+    mutationFn: async ({ id, got }: { id: string; got: boolean }) => {
+      const r = await fetch(`/api/shopping/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ got }),
+      });
+      if (!r.ok) throw new Error("toggle shopping got failed");
+      return r.json();
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ["shopping"] }),
+  });
+
+  const deleteShoppingItem = useMutation({
+    mutationFn: async (id: string) => {
+      const r = await fetch(`/api/shopping/${id}`, { method: "DELETE" });
+      if (!r.ok) throw new Error("delete shopping failed");
+      return r.json();
+    },
+    onMutate: async (id) => {
+      await qc.cancelQueries({ queryKey: ["shopping"] });
+      const prev = qc.getQueryData<ShoppingItem[]>(["shopping"]);
+      qc.setQueryData<ShoppingItem[]>(["shopping"], (old) =>
+        (old ?? []).filter((i) => i.id !== id),
+      );
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prev) qc.setQueryData(["shopping"], ctx.prev);
+      toast.error("Could not delete shopping item.");
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ["shopping"] }),
+  });
+
+  // Restock pantry from a shopping item: add qty to the linked PantryItem
+  // and delete the shopping item.
+  const restockPantryFromShopping = useMutation({
+    mutationFn: async ({
+      shoppingId,
+      pantryItemId,
+      qty,
+    }: {
+      shoppingId: string;
+      pantryItemId: string;
+      qty: number;
+    }) => {
+      // Add qty to pantry
+      const items = qc.getQueryData<PantryItem[]>(["pantry"]) ?? [];
+      const item = items.find((i) => i.id === pantryItemId);
+      const newQty = Math.max(0, Number(((item?.quantity ?? 0) + qty).toFixed(2)));
+      const pr = await fetch(`/api/pantry/${pantryItemId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quantity: newQty }),
+      });
+      if (!pr.ok) throw new Error("restock pantry failed");
+      // Delete shopping item
+      const sr = await fetch(`/api/shopping/${shoppingId}`, { method: "DELETE" });
+      if (!sr.ok) throw new Error("delete shopping failed");
+      return { newQty };
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ["pantry"] });
+      qc.invalidateQueries({ queryKey: ["shopping"] });
+    },
+  });
+
+  const clearGotShopping = useMutation({
+    mutationFn: async () => {
+      const items = qc.getQueryData<ShoppingItem[]>(["shopping"]) ?? [];
+      const got = items.filter((i) => i.gotAt);
+      await Promise.all(
+        got.map((i) =>
+          fetch(`/api/shopping/${i.id}`, { method: "DELETE" }),
+        ),
+      );
+      return { count: got.length };
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ["shopping"] }),
+  });
+
   const reseed = () => {
     fetch("/api/seed", { method: "POST" })
       .then(() => {
@@ -452,7 +715,8 @@ export default function Home() {
         qc.invalidateQueries({ queryKey: ["plantings"] });
         qc.invalidateQueries({ queryKey: ["batches"] });
         qc.invalidateQueries({ queryKey: ["pantry"] });
-        toast.success("Demo data restored.");
+        qc.invalidateQueries({ queryKey: ["shopping"] });
+        toast.success("All data reset to demo defaults.");
       })
       .catch(() => toast.error("Could not reseed."));
   };
@@ -461,14 +725,20 @@ export default function Home() {
   const plantings = plantingsQ.data ?? [];
   const batches = batchesQ.data ?? [];
   const pantry = pantryQ.data ?? [];
+  const shopping = shoppingQ.data ?? [];
   const loading =
-    tasksQ.isLoading || plantingsQ.isLoading || batchesQ.isLoading || pantryQ.isLoading;
+    tasksQ.isLoading ||
+    plantingsQ.isLoading ||
+    batchesQ.isLoading ||
+    pantryQ.isLoading ||
+    shoppingQ.isLoading;
 
   const openTaskCount = tasks.filter((t) => !t.completed).length;
   const readyBatchCount = batches.filter(
     (b) => b.status === "bottling" || b.status === "ready",
   ).length;
   const lowStockCount = pantry.filter(isLowStock).length;
+  const pendingShoppingCount = shopping.filter((i) => !i.gotAt).length;
 
   return (
     <div className="min-h-screen flex flex-col bg-background paper-texture">
@@ -516,18 +786,50 @@ export default function Home() {
                   </span>
                 )}
               </TabsTrigger>
+              <TabsTrigger value="shopping" className="gap-1.5">
+                <ShoppingCart className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Shopping</span>
+                {pendingShoppingCount > 0 && (
+                  <span className="ml-0.5 rounded-full bg-accent/20 px-1.5 text-[10px] font-medium text-accent-foreground">
+                    {pendingShoppingCount}
+                  </span>
+                )}
+              </TabsTrigger>
             </TabsList>
 
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={reseed}
-              className="text-muted-foreground"
-              title="Reset the demo data"
-            >
-              <Database className="mr-1.5 h-3.5 w-3.5" />
-              Reset demo data
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-muted-foreground"
+                  title="Wipe all data and restore demo seed"
+                >
+                  <Database className="mr-1.5 h-3.5 w-3.5" />
+                  Reset all data
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Reset all data?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will <strong>permanently delete</strong> every chore,
+                    planting, batch, pantry item, and shopping list entry you’ve
+                    added, and restore the original demo data. This can’t be
+                    undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={reseed}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    Yes, reset everything
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
 
           <TabsContent value="dashboard" className="m-0 focus-visible:outline-none">
@@ -560,6 +862,15 @@ export default function Home() {
                     onError: () => toast.error("Could not add chore."),
                   });
                 }}
+                onEdit={(id, data) => {
+                  editTask.mutate(
+                    { id, data },
+                    {
+                      onSuccess: () => toast.success("Chore updated."),
+                      onError: () => toast.error("Could not update chore."),
+                    },
+                  );
+                }}
               />
             )}
           </TabsContent>
@@ -575,6 +886,15 @@ export default function Home() {
                     onSuccess: () => toast.success("Planting added to the counter garden."),
                     onError: () => toast.error("Could not add planting."),
                   });
+                }}
+                onEdit={(id, data) => {
+                  editPlanting.mutate(
+                    { id, data },
+                    {
+                      onSuccess: () => toast.success("Planting updated."),
+                      onError: () => toast.error("Could not update planting."),
+                    },
+                  );
                 }}
                 onStatusChange={(id, status) =>
                   changePlantingStatus.mutate({ id, status })
@@ -595,6 +915,15 @@ export default function Home() {
                     onSuccess: () => toast.success("Batch added to the counter."),
                     onError: () => toast.error("Could not add batch."),
                   });
+                }}
+                onEdit={(id, data) => {
+                  editBatch.mutate(
+                    { id, data },
+                    {
+                      onSuccess: () => toast.success("Batch updated."),
+                      onError: () => toast.error("Could not update batch."),
+                    },
+                  );
                 }}
                 onAdvance={(id, status) => advanceBatch.mutate({ id, status })}
                 onFeed={(id) => {
@@ -620,8 +949,100 @@ export default function Home() {
                     onError: () => toast.error("Could not add pantry item."),
                   });
                 }}
+                onEdit={(id, data) => {
+                  editPantryItem.mutate(
+                    { id, data },
+                    {
+                      onSuccess: () => toast.success("Pantry item updated."),
+                      onError: () => toast.error("Could not update pantry item."),
+                    },
+                  );
+                }}
                 onAdjust={(id, delta) => adjustPantryItem.mutate({ id, delta })}
+                onAddToShopping={(item) => {
+                  createShoppingItem.mutate(
+                    {
+                      name: item.name,
+                      quantity: Math.max(1, item.lowStockAt ?? 1),
+                      unit: item.unit,
+                      pantryItemId: item.id,
+                    },
+                    {
+                      onSuccess: () =>
+                        toast.success(`${item.name} added to shopping list.`),
+                      onError: () =>
+                        toast.error("Could not add to shopping list."),
+                    },
+                  );
+                }}
                 onDelete={(id) => deletePantryItem.mutate(id)}
+              />
+            )}
+          </TabsContent>
+
+          <TabsContent value="shopping" className="m-0 focus-visible:outline-none">
+            {loading ? (
+              <LoadingCard />
+            ) : (
+              <Shopping
+                items={shopping}
+                lowStockPantry={pantry.filter(isLowStock)}
+                onCreate={(data) => {
+                  createShoppingItem.mutate(data, {
+                    onSuccess: () => toast.success("Added to shopping list."),
+                    onError: () => toast.error("Could not add to shopping list."),
+                  });
+                }}
+                onAdjust={(id, delta) =>
+                  adjustShoppingItem.mutate({ id, delta })
+                }
+                onToggleGot={(id, got) =>
+                  toggleShoppingGot.mutate({ id, got })
+                }
+                onAddFromPantry={(item) => {
+                  createShoppingItem.mutate(
+                    {
+                      name: item.name,
+                      quantity: Math.max(1, item.lowStockAt ?? 1),
+                      unit: item.unit,
+                      pantryItemId: item.id,
+                    },
+                    {
+                      onSuccess: () =>
+                        toast.success(`${item.name} added to shopping list.`),
+                      onError: () =>
+                        toast.error("Could not add to shopping list."),
+                    },
+                  );
+                }}
+                onRestockPantry={(shoppingId, qty) => {
+                  const sItem = shopping.find((i) => i.id === shoppingId);
+                  if (!sItem?.pantryItemId) {
+                    toast.error("No linked pantry item to restock.");
+                    return;
+                  }
+                  restockPantryFromShopping.mutate(
+                    {
+                      shoppingId,
+                      pantryItemId: sItem.pantryItemId,
+                      qty,
+                    },
+                    {
+                      onSuccess: () =>
+                        toast.success("Pantry restocked and item cleared."),
+                      onError: () =>
+                        toast.error("Could not restock pantry."),
+                    },
+                  );
+                }}
+                onClearGot={() => {
+                  clearGotShopping.mutate(undefined, {
+                    onSuccess: (res) =>
+                      toast.success(`Cleared ${res?.count ?? 0} got item(s).`),
+                    onError: () => toast.error("Could not clear got items."),
+                  });
+                }}
+                onDelete={(id) => deleteShoppingItem.mutate(id)}
               />
             )}
           </TabsContent>
@@ -637,13 +1058,32 @@ export default function Home() {
             A quiet ledger for the apartment homestead.
           </p>
           <p>
-            Data lives in a local SQLite file — refresh anytime with{' '}
-            <button
-              onClick={reseed}
-              className="underline underline-offset-2 hover:text-foreground"
-            >
-              reset demo data
-            </button>
+            Data lives in a local SQLite file —{' '}
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button className="underline underline-offset-2 hover:text-foreground">
+                  reset all data
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Reset all data?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This permanently deletes every entry and restores the
+                    original demo data. Can’t be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={reseed}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    Yes, reset everything
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
             .
           </p>
         </div>

@@ -405,10 +405,12 @@ function computeStarterHealth(starter: Batch | null): {
   if (!starter) {
     return { label: "No active starter", tone: "unknown" };
   }
-  if (!starter.startDate) {
+  // Use lastFedAt (the most recent feeding) — fall back to startDate if never fed.
+  const fedIso = starter.lastFedAt ?? starter.startDate;
+  if (!fedIso) {
     return { label: `${starter.name} — no feed date`, tone: "unknown" };
   }
-  const last = new Date(starter.startDate).getTime();
+  const last = new Date(fedIso).getTime();
   const hours = (Date.now() - last) / 3_600_000;
   const shortName = starter.name.split("—")[0].trim().slice(0, 18);
   if (hours < 1) {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AlertTriangle, Archive, Minus, Plus, Trash2 } from "lucide-react";
+import { AlertTriangle, Archive, Minus, Pencil, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,11 +45,28 @@ interface Props {
     location?: string;
     notes?: string;
   }) => void;
+  onEdit: (id: string, data: {
+    name: string;
+    category: PantryCategory;
+    quantity: number;
+    unit: string;
+    lowStockAt?: number;
+    location?: string;
+    notes?: string;
+  }) => void;
   onAdjust: (id: string, delta: number) => void;
+  onAddToShopping?: (item: PantryItem) => void;
   onDelete: (id: string) => void;
 }
 
-export function Pantry({ items, onCreate, onAdjust, onDelete }: Props) {
+export function Pantry({
+  items,
+  onCreate,
+  onEdit,
+  onAdjust,
+  onAddToShopping,
+  onDelete,
+}: Props) {
   const [open, setOpen] = useState(false);
 
   const lowStock = items.filter(isLowStock);
@@ -76,11 +93,15 @@ export function Pantry({ items, onCreate, onAdjust, onDelete }: Props) {
               Add item
             </Button>
           </DialogTrigger>
-          <AddItemDialog
+          <PantryFormDialog
+            title="Add a pantry item"
+            description="Jars, bags, bottles — anything you’d want to track before it runs out."
+            submitLabel="Add to pantry"
             onClose={() => setOpen(false)}
-            onCreate={(data) => {
+            onSubmit={(data) => {
               onCreate(data);
               setOpen(false);
+              toast.success("Added to the pantry.");
             }}
           />
         </Dialog>
@@ -104,6 +125,19 @@ export function Pantry({ items, onCreate, onAdjust, onDelete }: Props) {
                 </span>
               ))}
             </div>
+            {onAddToShopping && lowStock.length > 0 && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="ml-auto border-accent/40 text-accent hover:bg-accent/10"
+                onClick={() => {
+                  lowStock.forEach((i) => onAddToShopping(i));
+                }}
+              >
+                <ShoppingCart className="mr-1.5 h-3.5 w-3.5" />
+                Add all to shopping list
+              </Button>
+            )}
           </CardContent>
         </Card>
       )}
@@ -133,7 +167,9 @@ export function Pantry({ items, onCreate, onAdjust, onDelete }: Props) {
                   <PantryRow
                     key={item.id}
                     item={item}
+                    onEdit={onEdit}
                     onAdjust={onAdjust}
+                    onAddToShopping={onAddToShopping}
                     onDelete={onDelete}
                   />
                 ))}
@@ -148,14 +184,27 @@ export function Pantry({ items, onCreate, onAdjust, onDelete }: Props) {
 
 function PantryRow({
   item,
+  onEdit,
   onAdjust,
+  onAddToShopping,
   onDelete,
 }: {
   item: PantryItem;
+  onEdit: (id: string, data: {
+    name: string;
+    category: PantryCategory;
+    quantity: number;
+    unit: string;
+    lowStockAt?: number;
+    location?: string;
+    notes?: string;
+  }) => void;
   onAdjust: (id: string, delta: number) => void;
+  onAddToShopping?: (item: PantryItem) => void;
   onDelete: (id: string) => void;
 }) {
   const low = isLowStock(item);
+  const [editOpen, setEditOpen] = useState(false);
   return (
     <div
       className={`group flex items-center gap-2 rounded-md border bg-card/60 px-3 py-2.5 transition hover:bg-card ${
@@ -199,25 +248,78 @@ function PantryRow({
           <Plus className="h-3.5 w-3.5" />
         </Button>
       </div>
-      <Button
-        size="icon"
-        variant="ghost"
-        className="h-7 w-7 text-muted-foreground opacity-0 transition group-hover:opacity-100 hover:text-destructive"
-        onClick={() => onDelete(item.id)}
-        aria-label="Delete pantry item"
-      >
-        <Trash2 className="h-3.5 w-3.5" />
-      </Button>
+      <div className="flex shrink-0 items-center opacity-0 transition group-hover:opacity-100">
+        {onAddToShopping && (
+          <Button
+            size="icon"
+            variant="ghost"
+            className="h-7 w-7 text-muted-foreground hover:text-accent"
+            onClick={() => onAddToShopping(item)}
+            aria-label="Add to shopping list"
+            title="Add to shopping list"
+          >
+            <ShoppingCart className="h-3.5 w-3.5" />
+          </Button>
+        )}
+        <Dialog open={editOpen} onOpenChange={setEditOpen}>
+          <DialogTrigger asChild>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-7 w-7 text-muted-foreground hover:text-primary"
+              aria-label="Edit pantry item"
+            >
+              <Pencil className="h-3.5 w-3.5" />
+            </Button>
+          </DialogTrigger>
+          <PantryFormDialog
+            title="Edit pantry item"
+            description="Update the item details."
+            submitLabel="Save changes"
+            initial={item}
+            onClose={() => setEditOpen(false)}
+            onSubmit={(data) => {
+              onEdit(item.id, data);
+              setEditOpen(false);
+            }}
+          />
+        </Dialog>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-7 w-7 text-muted-foreground hover:text-destructive"
+          onClick={() => onDelete(item.id)}
+          aria-label="Delete pantry item"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </Button>
+      </div>
     </div>
   );
 }
 
-function AddItemDialog({
+function PantryFormDialog({
+  title,
+  description,
+  submitLabel,
+  initial,
   onClose,
-  onCreate,
+  onSubmit,
 }: {
+  title: string;
+  description: string;
+  submitLabel: string;
+  initial?: {
+    name: string;
+    category: PantryCategory;
+    quantity: number;
+    unit: string;
+    lowStockAt?: number | null;
+    location?: string | null;
+    notes?: string | null;
+  };
   onClose: () => void;
-  onCreate: (data: {
+  onSubmit: (data: {
     name: string;
     category: PantryCategory;
     quantity: number;
@@ -227,20 +329,22 @@ function AddItemDialog({
     notes?: string;
   }) => void;
 }) {
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState<PantryCategory>("dry");
-  const [quantity, setQuantity] = useState("1");
-  const [unit, setUnit] = useState("jar");
-  const [lowStockAt, setLowStockAt] = useState("");
-  const [location, setLocation] = useState("");
-  const [notes, setNotes] = useState("");
+  const [name, setName] = useState(initial?.name ?? "");
+  const [category, setCategory] = useState<PantryCategory>(initial?.category ?? "dry");
+  const [quantity, setQuantity] = useState(String(initial?.quantity ?? 1));
+  const [unit, setUnit] = useState(initial?.unit ?? "jar");
+  const [lowStockAt, setLowStockAt] = useState(
+    initial?.lowStockAt != null ? String(initial.lowStockAt) : "",
+  );
+  const [location, setLocation] = useState(initial?.location ?? "");
+  const [notes, setNotes] = useState(initial?.notes ?? "");
 
   const submit = () => {
     if (!name.trim()) {
       toast.error("Give the item a name first.");
       return;
     }
-    onCreate({
+    onSubmit({
       name: name.trim(),
       category,
       quantity: Number(quantity) || 1,
@@ -250,23 +354,20 @@ function AddItemDialog({
       notes: notes.trim() || undefined,
     });
     onClose();
-    toast.success("Added to the pantry.");
   };
 
   return (
     <DialogContent className="sm:max-w-md">
       <DialogHeader>
-        <DialogTitle className="font-serif text-xl">Add a pantry item</DialogTitle>
-        <DialogDescription>
-          Jars, bags, bottles — anything you’d want to track before it runs out.
-        </DialogDescription>
+        <DialogTitle className="font-serif text-xl">{title}</DialogTitle>
+        <DialogDescription>{description}</DialogDescription>
       </DialogHeader>
       <div className="space-y-3">
         <div className="space-y-1.5">
           <Label htmlFor="name">Item</Label>
           <Input
             id="name"
-            placeholder="e.g. Croissant flour"
+            placeholder="e.g. Bread flour"
             value={name}
             onChange={(e) => setName(e.target.value)}
             autoFocus
@@ -353,7 +454,7 @@ function AddItemDialog({
         <Button variant="ghost" onClick={onClose}>
           Cancel
         </Button>
-        <Button onClick={submit}>Add to pantry</Button>
+        <Button onClick={submit}>{submitLabel}</Button>
       </DialogFooter>
     </DialogContent>
   );
