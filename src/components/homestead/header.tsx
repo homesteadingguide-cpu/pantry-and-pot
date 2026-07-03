@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Calendar,
@@ -66,12 +66,27 @@ interface Props {
 }
 
 export function Header({ batches, onGoToCultures }: Props) {
-  const now = new Date();
-  const dateLabel = now.toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  });
+  // Render the date client-side only — otherwise SSR (UTC) and the browser
+  // (user's locale, e.g. Pacific/Auckland) disagree on the day and React
+  // throws a hydration mismatch.
+  const [dateLabel, setDateLabel] = useState<string>("");
+  useEffect(() => {
+    const fmt = () =>
+      new Date().toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+      });
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: client-only to avoid hydration mismatch
+    setDateLabel(fmt());
+    // Refresh at local midnight so a long-open tab doesn't show yesterday.
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setHours(24, 0, 0, 0);
+    const msUntilMidnight = tomorrow.getTime() - now.getTime();
+    const t = setTimeout(() => setDateLabel(fmt()), msUntilMidnight + 1000);
+    return () => clearTimeout(t);
+  }, []);
 
   const weatherQ = useQuery({
     queryKey: ["weather"],
@@ -84,9 +99,24 @@ export function Header({ batches, onGoToCultures }: Props) {
     retry: 1,
   });
 
-  // Starter health — most recently fed active sourdough batch
+  // Starter health — most recently fed active sourdough batch.
+  // Computed client-side only because it depends on Date.now() and would
+  // otherwise cause hydration mismatches (server time vs client time).
   const starter = pickStarter(batches);
-  const starterHealth = computeStarterHealth(starter);
+  const [starterHealth, setStarterHealth] = useState({
+    label: "—",
+    tone: "unknown" as "ok" | "warning" | "critical" | "unknown",
+  });
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: client-only to avoid hydration mismatch
+    setStarterHealth(computeStarterHealth(starter));
+    // Refresh every 5 minutes so "fed Xh ago" stays roughly current.
+    const t = setInterval(
+      () => setStarterHealth(computeStarterHealth(starter)),
+      5 * 60 * 1000,
+    );
+    return () => clearInterval(t);
+  }, [starter]);
 
   return (
     <header className="border-b border-border bg-card/60 backdrop-blur-sm">
@@ -111,7 +141,7 @@ export function Header({ batches, onGoToCultures }: Props) {
 
           <div className="flex flex-wrap gap-2 text-sm">
             <Chip icon={Calendar} tone="neutral">
-              {dateLabel}
+              {dateLabel || "—"}
             </Chip>
             <WeatherChip weatherQ={weatherQ} />
             <StarterChip
