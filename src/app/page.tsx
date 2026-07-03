@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {
   Archive,
   Database,
+  ExternalLink,
   FlaskConical,
   LayoutDashboard,
   ListTodo,
@@ -766,7 +767,7 @@ export default function Home() {
               </TabsTrigger>
               <TabsTrigger value="plantings" className="gap-1.5">
                 <Sprout className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Sill &amp; balcony</span>
+                <span className="hidden sm:inline">Plantings</span>
               </TabsTrigger>
               <TabsTrigger value="batches" className="gap-1.5">
                 <FlaskConical className="h-3.5 w-3.5" />
@@ -1050,42 +1051,54 @@ export default function Home() {
       </main>
 
       <footer className="mt-auto border-t border-border bg-card/40">
-        <div className="mx-auto flex max-w-6xl flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-4 sm:px-6 py-5 text-xs text-muted-foreground">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 sm:px-6 py-5 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p className="flex items-center gap-1.5">
             <Sparkles className="h-3.5 w-3.5 text-primary/70" />
-            <span className="font-serif text-sm italic">Hearthstead</span>
+            <span className="font-serif text-sm italic">Pantry and Pot</span>
             <span className="mx-1">·</span>
             A quiet ledger for the apartment homestead.
           </p>
-          <p>
-            Data lives in a local SQLite file —{' '}
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <button className="underline underline-offset-2 hover:text-foreground">
-                  reset all data
-                </button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Reset all data?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This permanently deletes every entry and restores the
-                    original demo data. Can’t be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={reseed}
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                  >
-                    Yes, reset everything
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-            .
-          </p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <a
+              href="https://www.homesteadingguide.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 underline underline-offset-2 hover:text-foreground"
+            >
+              homesteadingguide.com
+              <ExternalLink className="h-3 w-3" />
+            </a>
+            <span className="text-muted-foreground/60">·</span>
+            <p>
+              Data lives in a local SQLite file —{' '}
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <button className="underline underline-offset-2 hover:text-foreground">
+                    reset all data
+                  </button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Reset all data?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This permanently deletes every entry and restores the
+                      original demo data. Can’t be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={reseed}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      Yes, reset everything
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+              .
+            </p>
+          </div>
         </div>
       </footer>
     </div>

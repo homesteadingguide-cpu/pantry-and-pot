@@ -44,8 +44,8 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* Rustic Warm palette — earthy cream background, forest-green primary,
-   terracotta accent, warm tan borders. Reads like a farm journal. */
+/* Pantry and Pot palette — earthy cream background, forest-green primary,
+   terracotta accent, warm tan borders. Reads like a kitchen journal. */
 :root {
   --radius: 0.5rem;
 

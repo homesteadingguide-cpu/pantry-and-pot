@@ -22,18 +22,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hearthstead — Homestead Manager",
+  title: "Pantry and Pot — Apartment Homestead Manager",
   description:
-    "A warm, journal-style homestead manager for tracking daily chores, plantings, and the rhythm of the seasons.",
+    "A warm, journal-style manager for the apartment homestead: balcony crops, kitchen ferments like kombucha and sourdough, and the pantry on the shelf.",
   keywords: [
-    "homestead",
-    "farm",
-    "garden",
-    "chores",
-    "plantings",
+    "apartment homestead",
+    "urban homestead",
+    "kombucha",
+    "sourdough",
+    "fermentation",
+    "balcony garden",
+    "pantry",
     "self-sufficiency",
   ],
-  authors: [{ name: "Hearthstead" }],
+  authors: [{ name: "Pantry and Pot" }],
 };
 
 export default function RootLayout({

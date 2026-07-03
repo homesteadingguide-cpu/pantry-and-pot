@@ -98,7 +98,7 @@ export function Header({ batches, onGoToCultures }: Props) {
             </div>
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                Hearthstead
+                Pantry and Pot
               </p>
               <h1 className="font-serif text-3xl sm:text-4xl font-semibold leading-tight text-foreground">
                 The Apartment Homestead

@@ -91,7 +91,7 @@ export async function GET(req: NextRequest) {
         cache: "no-store",
         headers: {
           // Nominatim requires a User-Agent identifying the app.
-          "User-Agent": "Hearthstead/1.0 (apartment-homestead-app)",
+          "User-Agent": "PantryAndPot/1.0 (apartment-homestead-app)",
         },
         signal: AbortSignal.timeout(8000),
       });
