@@ -101,7 +101,7 @@ export function Header({ batches, onGoToCultures }: Props) {
                 Pantry and Pot
               </p>
               <h1 className="font-serif text-3xl sm:text-4xl font-semibold leading-tight text-foreground">
-                The Apartment Homestead
+                Your Kitchen Counter Journal
               </h1>
               <p className="mt-1 text-sm text-muted-foreground">
                 A quiet ledger for the balcony, the counter, and the jar on the shelf.
