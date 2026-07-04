@@ -46,7 +46,7 @@ export function AuthDialog({ open, onOpenChange, reason = "signin" }: Props) {
       toast.error("Wrong passcode. Double-check and try again.");
       return;
     }
-    toast.success("Welcome! Your 7-day trial has started.");
+    toast.success("Signed in — welcome back to your kitchen counter journal.");
     onOpenChange(false);
     setEmail("");
     setPasscode("");
@@ -58,13 +58,13 @@ export function AuthDialog({ open, onOpenChange, reason = "signin" }: Props) {
     reason === "expired"
       ? "Your trial has ended"
       : reason === "trial"
-        ? "Start your 7-day free trial"
+        ? "Sign in to make changes"
         : "Sign in to Pantry and Pot";
 
   const description =
     reason === "expired"
       ? "You can still browse your data, but editing is locked. Subscribe to keep managing your homestead."
-      : "Enter your email and the trial passcode to unlock full access for 7 days — no credit card needed.";
+      : "Enter your email and passcode to continue. Use your trial passcode for 7 days free, or your paid passcode for full access.";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -98,7 +98,7 @@ export function AuthDialog({ open, onOpenChange, reason = "signin" }: Props) {
             <Input
               id="auth-passcode"
               type="password"
-              placeholder="Enter the trial passcode"
+              placeholder="Enter your passcode"
               value={passcode}
               onChange={(e) => setPasscode(e.target.value)}
               autoComplete="off"
@@ -112,12 +112,12 @@ export function AuthDialog({ open, onOpenChange, reason = "signin" }: Props) {
               {loading ? (
                 <>
                   <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
-                  Starting trial…
+                  Signing in…
                 </>
               ) : reason === "expired" ? (
                 "Sign in to continue"
               ) : (
-                "Start free trial"
+                "Sign in"
               )}
             </Button>
             {reason === "expired" && (

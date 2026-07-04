@@ -3,8 +3,12 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { db } from "@/lib/db";
 import { seedDemoDataForUser } from "@/lib/seed";
 
-const TRIAL_PASSCODE = process.env.TRIAL_PASSCODE || "PANTRY&POT";
+const TRIAL_PASSCODE = process.env.TRIAL_PASSCODE || "PANTRYPOT";
+const PAID_PASSCODE = process.env.PAID_PASSCODE || "PANTRYPAID";
 export const TRIAL_DAYS = 7;
+// When a paid user signs in, set paidUntil to this far in the future.
+// Year 2126 — effectively "lifetime" but still a date we can extend later.
+const PAID_UNTIL_YEARS = 100;
 
 export interface AppUser {
   id: string;
@@ -16,7 +20,7 @@ export interface AppUser {
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: "Trial access",
+      name: "Sign in",
       credentials: {
         email: { label: "Email", type: "email", placeholder: "you@example.com" },
         passcode: { label: "Passcode", type: "password" },
@@ -25,7 +29,11 @@ export const authOptions: NextAuthOptions = {
         const email = credentials?.email?.trim().toLowerCase();
         const passcode = credentials?.passcode;
         if (!email || !passcode) return null;
-        if (passcode !== TRIAL_PASSCODE) return null;
+
+        // Determine access type from the passcode the user entered.
+        const isPaid = passcode === PAID_PASSCODE;
+        const isTrial = passcode === TRIAL_PASSCODE;
+        if (!isPaid && !isTrial) return null; // wrong passcode
 
         let user = await db.user.findUnique({ where: { email } });
         if (!user) {
@@ -34,6 +42,18 @@ export const authOptions: NextAuthOptions = {
           });
           // Seed a copy of demo data for this new user so they have something to play with.
           await seedDemoDataForUser(user.id);
+        }
+
+        // If they used the PAID passcode, mark their account as paid
+        // (extends paidUntil to 100 years from now). This is idempotent —
+        // signing in again with the paid passcode just re-extends it.
+        if (isPaid) {
+          const paidUntil = new Date();
+          paidUntil.setFullYear(paidUntil.getFullYear() + PAID_UNTIL_YEARS);
+          user = await db.user.update({
+            where: { id: user.id },
+            data: { paidUntil },
+          });
         }
 
         return {

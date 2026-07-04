@@ -44,15 +44,15 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* Pantry and Pot palette — light sage-green body (cards pop),
-   forest-green primary, terracotta accent in the header. */
+/* Pantry and Pot palette — warm cream body, forest-green primary,
+   terracotta accent in the header. Cards have a subtle shadow to pop. */
 :root {
   --radius: 0.5rem;
 
   /* Surfaces */
-  --background: oklch(0.96 0.028 150);          /* light sage green — main body */
-  --foreground: oklch(0.28 0.025 50);           /* deep warm brown */
-  --card: oklch(0.99 0.012 85);                 /* paper white — pops against green */
+  --background: oklch(0.95 0.025 60);             /* warm cream — slightly darker than original, more terracotta warmth */
+  --foreground: oklch(0.28 0.025 50);             /* deep warm brown */
+  --card: oklch(0.99 0.012 85);                   /* paper white */
   --card-foreground: oklch(0.28 0.025 50);
   --popover: oklch(0.99 0.012 85);
   --popover-foreground: oklch(0.28 0.025 50);
@@ -118,7 +118,11 @@
     @apply bg-background text-foreground;
     font-feature-settings: "ss01", "cv11";
   }
-  /* Subtle paper-grain texture for the rustic feel */
+  /* Subtle shadow on cards so they lift off the cream background */
+  [data-slot="card"] {
+    box-shadow: 0 1px 2px oklch(0.28 0.025 50 / 0.04),
+                0 2px 8px oklch(0.28 0.025 50 / 0.06);
+  }
   .paper-texture {
     background-image:
       radial-gradient(oklch(0.5 0.04 60 / 0.025) 1px, transparent 1px);
