@@ -1,0 +1,825 @@
+Time
+Status
+Host
+Request
+Messages
+TimeMethodStatusHostRequestMessage
+Jul 04 14:32:58.19
+POST401
+pantry-and-pot.vercel.app
+/api/auth/callback/credentials
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."name", "public"."User"."trialStartedAt", "public"."User"."paidUntil", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE ("public"."User"."email" = $1 AND 1=1) LIMIT $2 OFFSET $3
+Jul 04 14:32:57.87
+GET200
+pantry-and-pot.vercel.app
+/api/auth/csrf
+Jul 04 14:32:57.57
+GET200
+pantry-and-pot.vercel.app
+/api/auth/providers
+Jul 04 14:32:45.51
+POST401
+pantry-and-pot.vercel.app
+/api/auth/callback/credentials
+2
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."name", "public"."User"."trialStartedAt", "public"."User"."paidUntil", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE ("public"."User"."email" = $1 AND 1=1) LIMIT $2 OFFSET $3
+Jul 04 14:32:45.21
+GET200
+pantry-and-pot.vercel.app
+/api/auth/csrf
+Jul 04 14:32:44.89
+GET200
+pantry-and-pot.vercel.app
+/api/auth/providers
+Jul 04 14:32:08.25
+GET500
+pantry-and-pot.vercel.app
+/api/weather
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.setting.findUnique()` invocation: The table `public.Setting` does not exist in the current database. at async C (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:3586) at async d (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:7468) at async s (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:8509) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:32:07.67
+GET200
+pantry-and-pot.vercel.app
+/api/auth/providers
+Jul 04 14:32:07.65
+GET500
+pantry-and-pot.vercel.app
+/api/tasks
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.task.findMany()` invocation: The table `public.Task` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5540) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6581) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:32:06.91
+GET500
+pantry-and-pot.vercel.app
+/api/tasks
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.task.findMany()` invocation: The table `public.Task` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5540) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6581) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:32:06.32
+GET500
+pantry-and-pot.vercel.app
+/api/pantry
+3
+Error [PrismaClientKnownRequestError]: Invalid `prisma.pantryItem.findMany()` invocation: The table `public.PantryItem` does not exist in the current database. at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5562) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6603) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:32:06.23
+GET500
+pantry-and-pot.vercel.app
+/api/shopping
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.shoppingItem.findMany()` invocation: The table `public.ShoppingItem` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:1888) at async d (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:5502) at async l (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:6543) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:32:05.21
+GET500
+pantry-and-pot.vercel.app
+/api/plantings
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.planting.findMany()` invocation: The table `public.Planting` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5649) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6690) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:32:03.87
+GET500
+pantry-and-pot.vercel.app
+/api/batches
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.batch.findMany()` invocation: The table `public.Batch` does not exist in the current database. at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6591) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:32:03.13
+GET500
+pantry-and-pot.vercel.app
+/api/tasks
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.task.findMany()` invocation: The table `public.Task` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5540) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6581) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:32:01.82
+GET500
+pantry-and-pot.vercel.app
+/api/pantry
+3
+Error [PrismaClientKnownRequestError]: Invalid `prisma.pantryItem.findMany()` invocation: The table `public.PantryItem` does not exist in the current database. at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5562) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6603) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:32:01.69
+GET500
+pantry-and-pot.vercel.app
+/api/shopping
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.shoppingItem.findMany()` invocation: The table `public.ShoppingItem` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:1888) at async d (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:5502) at async l (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:6543) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:59.38
+GET500
+pantry-and-pot.vercel.app
+/api/tasks
+6
+Error [PrismaClientKnownRequestError]: Invalid `prisma.task.findMany()` invocation: The table `public.Task` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5540) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6581) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:59.35
+GET500
+pantry-and-pot.vercel.app
+/api/plantings
+5
+Error [PrismaClientKnownRequestError]: Invalid `prisma.planting.findMany()` invocation: The table `public.Planting` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5649) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6690) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:59.35
+GET500
+pantry-and-pot.vercel.app
+/api/batches
+4
+Error [PrismaClientKnownRequestError]: Invalid `prisma.batch.findMany()` invocation: The table `public.Batch` does not exist in the current database. at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6591) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:58.06
+GET500
+pantry-and-pot.vercel.app
+/api/pantry
+4
+Error [PrismaClientKnownRequestError]: Invalid `prisma.pantryItem.findMany()` invocation: The table `public.PantryItem` does not exist in the current database. at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5562) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6603) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:56.84
+GET500
+pantry-and-pot.vercel.app
+/api/batches
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.batch.findMany()` invocation: The table `public.Batch` does not exist in the current database. at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6591) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:56.83
+GET500
+pantry-and-pot.vercel.app
+/api/plantings
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.planting.findMany()` invocation: The table `public.Planting` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5649) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6690) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:56.82
+GET500
+pantry-and-pot.vercel.app
+/api/shopping
+3
+Error [PrismaClientKnownRequestError]: Invalid `prisma.shoppingItem.findMany()` invocation: The table `public.ShoppingItem` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:1888) at async d (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:5502) at async l (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:6543) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:55.32
+GET500
+pantry-and-pot.vercel.app
+/api/tasks
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.task.findMany()` invocation: The table `public.Task` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5540) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6581) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:55.32
+GET500
+pantry-and-pot.vercel.app
+/api/plantings
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.planting.findMany()` invocation: The table `public.Planting` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5649) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6690) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:55.32
+GET500
+pantry-and-pot.vercel.app
+/api/batches
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.batch.findMany()` invocation: The table `public.Batch` does not exist in the current database. at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6591) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:55.32
+GET500
+pantry-and-pot.vercel.app
+/api/pantry
+4
+Error [PrismaClientKnownRequestError]: Invalid `prisma.pantryItem.findMany()` invocation: The table `public.PantryItem` does not exist in the current database. at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5562) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6603) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:55.32
+GET500
+pantry-and-pot.vercel.app
+/api/shopping
+3
+Error [PrismaClientKnownRequestError]: Invalid `prisma.shoppingItem.findMany()` invocation: The table `public.ShoppingItem` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:1888) at async d (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:5502) at async l (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:6543) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:55.12
+GET500
+pantry-and-pot.vercel.app
+/api/weather
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.setting.findUnique()` invocation: The table `public.Setting` does not exist in the current database. at async C (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:3586) at async d (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:7468) at async s (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:8509) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:54.81
+POST500
+pantry-and-pot.vercel.app
+/api/seed
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.task.deleteMany()` invocation: The table `public.Task` does not exist in the current database. at async x (.next/server/chunks/[root-of-the-server]__466c39f0._.js:1:1550) at async d (.next/server/chunks/[root-of-the-server]__466c39f0._.js:1:11830) at async l (.next/server/chunks/[root-of-the-server]__466c39f0._.js:1:12871) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:54.11
+GET500
+pantry-and-pot.vercel.app
+/api/pantry
+3
+Error [PrismaClientKnownRequestError]: Invalid `prisma.pantryItem.findMany()` invocation: The table `public.PantryItem` does not exist in the current database. at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5562) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6603) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:54.11
+GET500
+pantry-and-pot.vercel.app
+/api/batches
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.batch.findMany()` invocation: The table `public.Batch` does not exist in the current database. at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6591) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:54.11
+GET500
+pantry-and-pot.vercel.app
+/api/plantings
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.planting.findMany()` invocation: The table `public.Planting` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5649) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6690) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:53.34
+GET500
+pantry-and-pot.vercel.app
+/api/tasks
+3
+Error [PrismaClientKnownRequestError]: Invalid `prisma.task.findMany()` invocation: The table `public.Task` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5540) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6581) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:53.33
+GET500
+pantry-and-pot.vercel.app
+/api/weather
+3
+Error [PrismaClientKnownRequestError]: Invalid `prisma.setting.findUnique()` invocation: The table `public.Setting` does not exist in the current database. at async C (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:3586) at async d (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:7468) at async s (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:8509) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:31:53.33
+GET200
+pantry-and-pot.vercel.app
+/api/auth/session
+Jul 04 14:31:53.04
+GET304
+pantry-and-pot.vercel.app
+/
+Jul 04 14:30:22.46
+GET500
+pantry-and-pot.vercel.app
+/api/shopping
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.shoppingItem.findMany()` invocation: The table `public.ShoppingItem` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:1888) at async d (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:5502) at async l (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:6543) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:22.46
+GET500
+pantry-and-pot.vercel.app
+/api/tasks
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.task.findMany()` invocation: The table `public.Task` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5540) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6581) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:16.52
+GET500
+pantry-and-pot.vercel.app
+/api/pantry
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.pantryItem.findMany()` invocation: The table `public.PantryItem` does not exist in the current database. at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5562) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6603) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:16.52
+GET500
+pantry-and-pot.vercel.app
+/api/plantings
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.planting.findMany()` invocation: The table `public.Planting` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5649) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6690) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:16.51
+GET500
+pantry-and-pot.vercel.app
+/api/batches
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.batch.findMany()` invocation: The table `public.Batch` does not exist in the current database. at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6591) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:10.63
+GET500
+pantry-and-pot.vercel.app
+/api/tasks
+4
+Error [PrismaClientKnownRequestError]: Invalid `prisma.task.findMany()` invocation: The table `public.Task` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5540) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6581) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:10.42
+GET500
+pantry-and-pot.vercel.app
+/api/shopping
+3
+Error [PrismaClientKnownRequestError]: Invalid `prisma.shoppingItem.findMany()` invocation: The table `public.ShoppingItem` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:1888) at async d (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:5502) at async l (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:6543) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:09.16
+GET500
+pantry-and-pot.vercel.app
+/api/batches
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.batch.findMany()` invocation: The table `public.Batch` does not exist in the current database. at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6591) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:09.16
+GET500
+pantry-and-pot.vercel.app
+/api/plantings
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.planting.findMany()` invocation: The table `public.Planting` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5649) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6690) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:09.16
+GET500
+pantry-and-pot.vercel.app
+/api/pantry
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.pantryItem.findMany()` invocation: The table `public.PantryItem` does not exist in the current database. at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5562) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6603) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:08.14
+GET500
+pantry-and-pot.vercel.app
+/api/tasks
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.task.findMany()` invocation: The table `public.Task` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5540) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6581) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:06.65
+GET500
+pantry-and-pot.vercel.app
+/api/pantry
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.pantryItem.findMany()` invocation: The table `public.PantryItem` does not exist in the current database. at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5562) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6603) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:06.64
+GET500
+pantry-and-pot.vercel.app
+/api/plantings
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.planting.findMany()` invocation: The table `public.Planting` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5649) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6690) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:06.64
+GET500
+pantry-and-pot.vercel.app
+/api/batches
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.batch.findMany()` invocation: The table `public.Batch` does not exist in the current database. at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6591) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:06.64
+GET500
+pantry-and-pot.vercel.app
+/api/shopping
+3
+Error [PrismaClientKnownRequestError]: Invalid `prisma.shoppingItem.findMany()` invocation: The table `public.ShoppingItem` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:1888) at async d (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:5502) at async l (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:6543) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:05.13
+GET500
+pantry-and-pot.vercel.app
+/api/plantings
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.planting.findMany()` invocation: The table `public.Planting` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5649) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6690) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:05.13
+GET500
+pantry-and-pot.vercel.app
+/api/pantry
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.pantryItem.findMany()` invocation: The table `public.PantryItem` does not exist in the current database. at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5562) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6603) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:05.13
+GET500
+pantry-and-pot.vercel.app
+/api/tasks
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.task.findMany()` invocation: The table `public.Task` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5540) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6581) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:05.13
+GET500
+pantry-and-pot.vercel.app
+/api/batches
+3
+Error [PrismaClientKnownRequestError]: Invalid `prisma.batch.findMany()` invocation: The table `public.Batch` does not exist in the current database. at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6591) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:05.13
+GET500
+pantry-and-pot.vercel.app
+/api/shopping
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.shoppingItem.findMany()` invocation: The table `public.ShoppingItem` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:1888) at async d (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:5502) at async l (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:6543) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:04.88
+GET500
+pantry-and-pot.vercel.app
+/api/weather
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.setting.findUnique()` invocation: The table `public.Setting` does not exist in the current database. at async C (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:3586) at async d (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:7468) at async s (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:8509) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:04.61
+POST500
+pantry-and-pot.vercel.app
+/api/seed
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.task.deleteMany()` invocation: The table `public.Task` does not exist in the current database. at async x (.next/server/chunks/[root-of-the-server]__466c39f0._.js:1:1550) at async d (.next/server/chunks/[root-of-the-server]__466c39f0._.js:1:11830) at async l (.next/server/chunks/[root-of-the-server]__466c39f0._.js:1:12871) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:03.86
+GET500
+pantry-and-pot.vercel.app
+/api/plantings
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.planting.findMany()` invocation: The table `public.Planting` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5649) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6690) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:03.86
+GET500
+pantry-and-pot.vercel.app
+/api/batches
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.batch.findMany()` invocation: The table `public.Batch` does not exist in the current database. at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6591) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:03.86
+GET500
+pantry-and-pot.vercel.app
+/api/pantry
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.pantryItem.findMany()` invocation: The table `public.PantryItem` does not exist in the current database. at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5562) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6603) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:03.08
+GET500
+pantry-and-pot.vercel.app
+/api/tasks
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.task.findMany()` invocation: The table `public.Task` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5540) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6581) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:03.08
+GET200
+pantry-and-pot.vercel.app
+/api/auth/session
+Jul 04 14:30:03.08
+GET500
+pantry-and-pot.vercel.app
+/api/weather
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.setting.findUnique()` invocation: The table `public.Setting` does not exist in the current database. at async C (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:3586) at async d (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:7468) at async s (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:8509) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:30:00.25
+GET200
+pantry-and-pot.vercel.app
+/
+Jul 04 14:29:52.33
+GET500
+pantry-and-osf1o1xrz-homesteading-guide.vercel.app
+/api/pantry
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.pantryItem.findMany()` invocation: The table `public.PantryItem` does not exist in the current database. at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5562) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6603) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:29:52.33
+GET500
+pantry-and-osf1o1xrz-homesteading-guide.vercel.app
+/api/batches
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.batch.findMany()` invocation: The table `public.Batch` does not exist in the current database. at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6591) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:29:52.33
+GET500
+pantry-and-osf1o1xrz-homesteading-guide.vercel.app
+/api/plantings
+4
+Error [PrismaClientKnownRequestError]: Invalid `prisma.planting.findMany()` invocation: The table `public.Planting` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5649) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6690) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:29:52.17
+GET500
+pantry-and-osf1o1xrz-homesteading-guide.vercel.app
+/api/pantry
+4
+Error [PrismaClientKnownRequestError]: Invalid `prisma.pantryItem.findMany()` invocation: The table `public.PantryItem` does not exist in the current database. at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5562) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6603) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:29:52.17
+GET500
+pantry-and-osf1o1xrz-homesteading-guide.vercel.app
+/api/batches
+3
+Error [PrismaClientKnownRequestError]: Invalid `prisma.batch.findMany()` invocation: The table `public.Batch` does not exist in the current database. at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6591) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:29:52.17
+GET500
+pantry-and-osf1o1xrz-homesteading-guide.vercel.app
+/api/plantings
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.planting.findMany()` invocation: The table `public.Planting` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5649) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6690) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:29:49.59
+GET200
+pantry-and-osf1o1xrz-homesteading-guide.vercel.app
+/api/auth/session
+Jul 04 14:29:49.59
+GET500
+pantry-and-osf1o1xrz-homesteading-guide.vercel.app
+/api/tasks
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.task.findMany()` invocation: The table `public.Task` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5540) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6581) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:29:49.59
+GET200
+pantry-and-osf1o1xrz-homesteading-guide.vercel.app
+/api/auth/session
+Jul 04 14:29:49.59
+GET500
+pantry-and-osf1o1xrz-homesteading-guide.vercel.app
+/api/weather
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.setting.findUnique()` invocation: The table `public.Setting` does not exist in the current database. at async C (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:3586) at async d (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:7468) at async s (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:8509) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:29:49.58
+GET500
+pantry-and-osf1o1xrz-homesteading-guide.vercel.app
+/api/tasks
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.task.findMany()` invocation: The table `public.Task` does not exist in the current database. at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5540) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6581) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:29:49.57
+GET500
+pantry-and-osf1o1xrz-homesteading-guide.vercel.app
+/api/weather
+2
+Error [PrismaClientKnownRequestError]: Invalid `prisma.setting.findUnique()` invocation: The table `public.Setting` does not exist in the current database. at async C (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:3586) at async d (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:7468) at async s (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:8509) { code: 'P2021', meta: [Object], clientVersion: '6.19.2' }
+Jul 04 14:29:49.26
+GET200
+pantry-and-osf1o1xrz-homesteading-guide.vercel.app
+/
+Jul 04 14:29:48.79
+GET200
+pantry-and-osf1o1xrz-homesteading-guide.vercel.app
+/
+Jul 04 14:29:32.88
+GET200
+pantry-and-osf1o1xrz-homesteading-guide.vercel.app
+/
+Jul 04 14:25:22.97
+GET500
+pantry-and-pot.vercel.app
+/api/tasks
+Error [PrismaClientInitializationError]: Invalid `prisma.task.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6591) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:16.73
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/shopping
+Error [PrismaClientInitializationError]: Invalid `prisma.shoppingItem.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:1888) at async d (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:5512) at async l (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:6553) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:16.72
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/tasks
+Error [PrismaClientInitializationError]: Invalid `prisma.task.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6591) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:16.71
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/pantry
+Error [PrismaClientInitializationError]: Invalid `prisma.pantryItem.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5572) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6613) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:16.71
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/batches
+Error [PrismaClientInitializationError]: Invalid `prisma.batch.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5560) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6601) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:16.71
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/plantings
+Error [PrismaClientInitializationError]: Invalid `prisma.planting.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5659) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6700) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:16.68
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/pantry
+Error [PrismaClientInitializationError]: Invalid `prisma.pantryItem.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5572) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6613) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:16.67
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/plantings
+Error [PrismaClientInitializationError]: Invalid `prisma.planting.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5659) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6700) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:16.65
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/shopping
+Error [PrismaClientInitializationError]: Invalid `prisma.shoppingItem.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:1888) at async d (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:5512) at async l (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:6553) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:16.65
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/batches
+Error [PrismaClientInitializationError]: Invalid `prisma.batch.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5560) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6601) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:16.65
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/tasks
+Error [PrismaClientInitializationError]: Invalid `prisma.task.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6591) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:16.38
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/weather
+Error [PrismaClientInitializationError]: Invalid `prisma.setting.findUnique()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async C (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:3586) at async d (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:7478) at async s (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:8519) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:16.24
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/weather
+Error [PrismaClientInitializationError]: Invalid `prisma.setting.findUnique()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async C (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:3586) at async d (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:7478) at async s (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:8519) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.61
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/pantry
+Error [PrismaClientInitializationError]: Invalid `prisma.pantryItem.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5572) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6613) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.61
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/shopping
+Error [PrismaClientInitializationError]: Invalid `prisma.shoppingItem.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:1888) at async d (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:5512) at async l (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:6553) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.61
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/batches
+Error [PrismaClientInitializationError]: Invalid `prisma.batch.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5560) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6601) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.61
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/plantings
+Error [PrismaClientInitializationError]: Invalid `prisma.planting.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5659) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6700) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.60
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/tasks
+Error [PrismaClientInitializationError]: Invalid `prisma.task.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6591) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.56
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/plantings
+Error [PrismaClientInitializationError]: Invalid `prisma.planting.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5659) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6700) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.55
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/pantry
+Error [PrismaClientInitializationError]: Invalid `prisma.pantryItem.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5572) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6613) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.55
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/shopping
+Error [PrismaClientInitializationError]: Invalid `prisma.shoppingItem.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:1888) at async d (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:5512) at async l (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:6553) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.55
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/tasks
+Error [PrismaClientInitializationError]: Invalid `prisma.task.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6591) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.55
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/batches
+Error [PrismaClientInitializationError]: Invalid `prisma.batch.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5560) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6601) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.49
+POST500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/seed
+Error [PrismaClientInitializationError]: Invalid `prisma.task.deleteMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async x (.next/server/chunks/[root-of-the-server]__466c39f0._.js:1:1550) at async d (.next/server/chunks/[root-of-the-server]__466c39f0._.js:1:11840) at async l (.next/server/chunks/[root-of-the-server]__466c39f0._.js:1:12881) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.42
+POST500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/seed
+Error [PrismaClientInitializationError]: Invalid `prisma.task.deleteMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async x (.next/server/chunks/[root-of-the-server]__466c39f0._.js:1:1550) at async d (.next/server/chunks/[root-of-the-server]__466c39f0._.js:1:11840) at async l (.next/server/chunks/[root-of-the-server]__466c39f0._.js:1:12881) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.37
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/pantry
+Error [PrismaClientInitializationError]: Invalid `prisma.pantryItem.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5572) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6613) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.36
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/plantings
+Error [PrismaClientInitializationError]: Invalid `prisma.planting.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5659) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6700) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.36
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/batches
+Error [PrismaClientInitializationError]: Invalid `prisma.batch.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5560) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6601) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.28
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/batches
+Error [PrismaClientInitializationError]: Invalid `prisma.batch.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5560) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6601) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.28
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/plantings
+Error [PrismaClientInitializationError]: Invalid `prisma.planting.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5659) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6700) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.28
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/pantry
+Error [PrismaClientInitializationError]: Invalid `prisma.pantryItem.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5572) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6613) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.23
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/weather
+Error [PrismaClientInitializationError]: Invalid `prisma.setting.findUnique()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async C (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:3586) at async d (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:7478) at async s (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:8519) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.23
+GET200
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/auth/session
+Jul 04 14:20:15.23
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/tasks
+Error [PrismaClientInitializationError]: Invalid `prisma.task.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6591) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.11
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/tasks
+Error [PrismaClientInitializationError]: Invalid `prisma.task.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6591) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:15.11
+GET200
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/auth/session
+Jul 04 14:20:15.11
+GET500
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/api/weather
+Error [PrismaClientInitializationError]: Invalid `prisma.setting.findUnique()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async C (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:3586) at async d (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:7478) at async s (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:8519) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:20:14.59
+GET200
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/
+Jul 04 14:20:14.59
+GET200
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/
+Jul 04 14:19:51.23
+GET200
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/
+Jul 04 14:19:51.16
+GET200
+pantry-and-8gpisel13-homesteading-guide.vercel.app
+/
+Jul 04 14:18:59.99
+GET200
+pantry-and-pot.vercel.app
+/api/auth/providers
+Jul 04 14:18:53.23
+GET500
+pantry-and-pot.vercel.app
+/api/tasks
+Error [PrismaClientInitializationError]: Invalid `prisma.task.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6591) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:46.99
+GET500
+pantry-and-pot.vercel.app
+/api/weather
+Error [PrismaClientInitializationError]: Invalid `prisma.setting.findUnique()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async C (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:3586) at async d (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:7478) at async s (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:8519) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:46.45
+GET200
+pantry-and-pot.vercel.app
+/api/auth/session
+Jul 04 14:18:45.89
+GET500
+pantry-and-pot.vercel.app
+/api/tasks
+Error [PrismaClientInitializationError]: Invalid `prisma.task.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6591) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:30.88
+GET200
+pantry-and-pot.vercel.app
+/
+Jul 04 14:18:30.57
+GET500
+pantry-and-pot.vercel.app
+/api/shopping
+Error [PrismaClientInitializationError]: Invalid `prisma.shoppingItem.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:1888) at async d (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:5512) at async l (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:6553) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:30.56
+GET500
+pantry-and-pot.vercel.app
+/api/pantry
+Error [PrismaClientInitializationError]: Invalid `prisma.pantryItem.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5572) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6613) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:30.56
+GET500
+pantry-and-pot.vercel.app
+/api/batches
+Error [PrismaClientInitializationError]: Invalid `prisma.batch.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5560) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6601) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:30.56
+GET500
+pantry-and-pot.vercel.app
+/api/plantings
+Error [PrismaClientInitializationError]: Invalid `prisma.planting.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5659) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6700) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:30.56
+GET500
+pantry-and-pot.vercel.app
+/api/tasks
+Error [PrismaClientInitializationError]: Invalid `prisma.task.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6591) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:11.04
+GET500
+pantry-and-pot.vercel.app
+/api/plantings
+Error [PrismaClientInitializationError]: Invalid `prisma.planting.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5659) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6700) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:10.73
+GET500
+pantry-and-pot.vercel.app
+/api/shopping
+Error [PrismaClientInitializationError]: Invalid `prisma.shoppingItem.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:1888) at async d (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:5512) at async l (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:6553) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:10.72
+GET500
+pantry-and-pot.vercel.app
+/api/batches
+Error [PrismaClientInitializationError]: Invalid `prisma.batch.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5560) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6601) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:10.72
+GET500
+pantry-and-pot.vercel.app
+/api/tasks
+Error [PrismaClientInitializationError]: Invalid `prisma.task.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6591) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:10.72
+GET500
+pantry-and-pot.vercel.app
+/api/pantry
+Error [PrismaClientInitializationError]: Invalid `prisma.pantryItem.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5572) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6613) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:08.44
+GET500
+pantry-and-pot.vercel.app
+/api/shopping
+Error [PrismaClientInitializationError]: Invalid `prisma.shoppingItem.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:1888) at async d (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:5512) at async l (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:6553) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:08.42
+GET500
+pantry-and-pot.vercel.app
+/api/batches
+Error [PrismaClientInitializationError]: Invalid `prisma.batch.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5560) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6601) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:08.41
+GET500
+pantry-and-pot.vercel.app
+/api/pantry
+Error [PrismaClientInitializationError]: Invalid `prisma.pantryItem.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5572) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6613) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:08.41
+GET500
+pantry-and-pot.vercel.app
+/api/plantings
+Error [PrismaClientInitializationError]: Invalid `prisma.planting.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5659) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6700) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:08.41
+GET500
+pantry-and-pot.vercel.app
+/api/tasks
+Error [PrismaClientInitializationError]: Invalid `prisma.task.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6591) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:07.33
+GET500
+pantry-and-pot.vercel.app
+/api/weather
+Error [PrismaClientInitializationError]: Invalid `prisma.setting.findUnique()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async C (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:3586) at async d (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:7478) at async s (.next/server/chunks/[root-of-the-server]__150072b0._.js:1:8519) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:07.11
+GET500
+pantry-and-pot.vercel.app
+/api/plantings
+Error [PrismaClientInitializationError]: Invalid `prisma.planting.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5659) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6700) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:07.11
+GET500
+pantry-and-pot.vercel.app
+/api/shopping
+Error [PrismaClientInitializationError]: Invalid `prisma.shoppingItem.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:1888) at async d (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:5512) at async l (.next/server/chunks/[root-of-the-server]__01466cfe._.js:1:6553) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:07.11
+GET500
+pantry-and-pot.vercel.app
+/api/pantry
+Error [PrismaClientInitializationError]: Invalid `prisma.pantryItem.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5572) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6613) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:07.11
+GET500
+pantry-and-pot.vercel.app
+/api/batches
+Error [PrismaClientInitializationError]: Invalid `prisma.batch.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5560) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6601) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:07.11
+GET500
+pantry-and-pot.vercel.app
+/api/tasks
+Error [PrismaClientInitializationError]: Invalid `prisma.task.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:5550) at async l (.next/server/chunks/[root-of-the-server]__37f308c7._.js:1:6591) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:06.80
+POST500
+pantry-and-pot.vercel.app
+/api/seed
+Error [PrismaClientInitializationError]: Invalid `prisma.task.deleteMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async x (.next/server/chunks/[root-of-the-server]__466c39f0._.js:1:1550) at async d (.next/server/chunks/[root-of-the-server]__466c39f0._.js:1:11840) at async l (.next/server/chunks/[root-of-the-server]__466c39f0._.js:1:12881) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:06.44
+GET500
+pantry-and-pot.vercel.app
+/api/pantry
+Error [PrismaClientInitializationError]: Invalid `prisma.pantryItem.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async w (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:1889) at async u (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:5572) at async l (.next/server/chunks/[root-of-the-server]__1473f933._.js:1:6613) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:06.44
+GET500
+pantry-and-pot.vercel.app
+/api/plantings
+Error [PrismaClientInitializationError]: Invalid `prisma.planting.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async y (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:5659) at async l (.next/server/chunks/[root-of-the-server]__0b29a157._.js:1:6700) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:06.44
+GET500
+pantry-and-pot.vercel.app
+/api/batches
+Error [PrismaClientInitializationError]: Invalid `prisma.batch.findMany()` invocation: error: Error validating datasource `db`: the URL must start with the protocol `file:`. --> schema.prisma:9 | 8 | provider = "sqlite" 9 | url = env("DATABASE_URL") | Validation Error Count: 1 at <unknown> (--> schema.prisma:9) at async E (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:1889) at async d (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:5560) at async l (.next/server/chunks/[root-of-the-server]__9032d396._.js:1:6601) { clientVersion: '6.19.2', errorCode: undefined, retryable: undefined }
+Jul 04 14:18:04.88
+GET500
+pantry-and-pot.vercel.app
+/api/tasks
+Error [PrismaClientInitializationError]: Invalid `prisma.task.findMany
