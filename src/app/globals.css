@@ -50,7 +50,7 @@
   --radius: 0.5rem;
 
   /* Surfaces */
-  --background: oklch(0.95 0.025 60);             /* warm cream — slightly darker than original, more terracotta warmth */
+  --background: oklch(0.975 0.018 85);             /* warm cream — original */
   --foreground: oklch(0.28 0.025 50);             /* deep warm brown */
   --card: oklch(0.99 0.012 85);                   /* paper white */
   --card-foreground: oklch(0.28 0.025 50);
