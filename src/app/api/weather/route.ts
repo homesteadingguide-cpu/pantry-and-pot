@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { setDefaultResultOrder } from "dns";
 import { db } from "@/lib/db";
 
-// Some sandboxes have broken IPv6 routing — prefer IPv4 for outbound DNS.
-setDefaultResultOrder("ipv4first");
+// Note: removed dns.setDefaultResultOrder — it was a sandbox workaround
+// that may cause issues on Vercel's serverless runtime.
 
 interface GeoResult {
   name: string;
@@ -135,7 +134,10 @@ export async function GET(req: NextRequest) {
 
   const omUrl = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&current=temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m`;
   try {
-    const r = await fetch(omUrl, { cache: "no-store" });
+    const r = await fetch(omUrl, {
+      cache: "no-store",
+      signal: AbortSignal.timeout(5000), // 5s timeout — don't hang the page
+    });
     if (!r.ok) {
       return NextResponse.json(
         { error: `weather fetch failed: ${r.status}` },

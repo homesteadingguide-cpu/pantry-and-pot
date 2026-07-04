@@ -104,8 +104,7 @@ export function AuthDialog({ open, onOpenChange, reason = "signin" }: Props) {
               autoComplete="off"
             />
             <p className="text-xs text-muted-foreground">
-              Don’t have a passcode? Get one from your homesteading guide
-              newsletter.
+              Don’t have a passcode? Grab one from the shop on homesteadingguide.com.
             </p>
           </div>
           <DialogFooter className="flex-col gap-2 sm:flex-col">

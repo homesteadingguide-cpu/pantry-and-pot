@@ -44,15 +44,15 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* Pantry and Pot palette — earthy cream background, forest-green primary,
-   terracotta accent, warm tan borders. Reads like a kitchen journal. */
+/* Pantry and Pot palette — light sage-green body (cards pop),
+   forest-green primary, terracotta accent in the header. */
 :root {
   --radius: 0.5rem;
 
   /* Surfaces */
-  --background: oklch(0.975 0.018 85);          /* warm cream */
+  --background: oklch(0.96 0.028 150);          /* light sage green — main body */
   --foreground: oklch(0.28 0.025 50);           /* deep warm brown */
-  --card: oklch(0.99 0.012 85);                 /* paper white */
+  --card: oklch(0.99 0.012 85);                 /* paper white — pops against green */
   --card-foreground: oklch(0.28 0.025 50);
   --popover: oklch(0.99 0.012 85);
   --popover-foreground: oklch(0.28 0.025 50);
@@ -64,7 +64,7 @@
   --secondary-foreground: oklch(0.3 0.03 150);
   --muted: oklch(0.93 0.02 85);
   --muted-foreground: oklch(0.5 0.025 60);
-  --accent: oklch(0.62 0.13 50);                /* terracotta */
+  --accent: oklch(0.62 0.13 50);                /* terracotta — header chips */
   --accent-foreground: oklch(0.99 0.012 85);
 
   --destructive: oklch(0.55 0.18 28);           /* burnt red */

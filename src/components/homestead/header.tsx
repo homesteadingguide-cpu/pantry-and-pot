@@ -273,16 +273,9 @@ function WeatherChip({
   }
 
   if (weatherQ.isError || !weatherQ.data) {
-    return (
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-muted-foreground ring-1 ring-border transition hover:bg-secondary/60"
-      >
-        <Cloud className="h-3.5 w-3.5" />
-        Weather unavailable
-      </button>
-    );
+    // Hide the chip entirely when weather is unavailable — keeps the header clean
+    // and avoids showing a persistent error. User can still sign in / use the app.
+    return null;
   }
 
   const w = weatherQ.data;

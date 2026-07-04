@@ -104,10 +104,13 @@ export default function Home() {
     setAuthOpen(true);
   }, []);
 
-  const handleSignOut = useCallback(() => {
-    signOut({ redirect: false });
+  const handleSignOut = useCallback(async () => {
+    // Clear cached data first so the UI flips to demo mode immediately
     qc.clear();
-    window.location.reload();
+    // signOut returns a promise — wait for it so the session cookie is gone before reload
+    await signOut({ redirect: false });
+    // Hard reload to reset all React state
+    window.location.href = window.location.pathname;
   }, [qc]);
 
   // Seed demo data ONLY if the DB is empty, so we don't wipe user work on refresh.
