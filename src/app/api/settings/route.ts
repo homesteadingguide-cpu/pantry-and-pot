@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { getSessionInfo } from "@/lib/session";
 
 const DEFAULT_LOCATION = {
   label: "Auckland",
@@ -8,7 +9,12 @@ const DEFAULT_LOCATION = {
 };
 
 export async function GET() {
-  const row = await db.setting.findUnique({ where: { key: "location" } });
+  const { user } = await getSessionInfo();
+  // Demo (null) users share a default location; signed-in users have their own setting.
+  const row = user
+    ? await db.setting.findUnique({ where: { key: "location" } })
+    : null;
+  // Note: for demo mode we always return the default — demo users can't save settings.
   if (!row) {
     return NextResponse.json(DEFAULT_LOCATION);
   }
@@ -20,6 +26,13 @@ export async function GET() {
 }
 
 export async function PUT(req: NextRequest) {
+  const { user, canMutate } = await getSessionInfo();
+  if (!user || !canMutate) {
+    return NextResponse.json(
+      { error: "Sign in to make changes." },
+      { status: 401 },
+    );
+  }
   const body = await req.json();
   const { label, lat, lon } = body;
   if (
@@ -33,10 +46,17 @@ export async function PUT(req: NextRequest) {
     );
   }
   const value = JSON.stringify({ label: label.trim(), lat, lon });
-  const setting = await db.setting.upsert({
-    where: { key: "location" },
-    create: { key: "location", value },
-    update: { value },
+  // Upsert by composite key+userId — for SQLite we use the key alone and update value.
+  const existing = await db.setting.findUnique({ where: { key: "location" } });
+  if (existing && existing.userId === user.id) {
+    const updated = await db.setting.update({
+      where: { key: "location" },
+      data: { value },
+    });
+    return NextResponse.json(JSON.parse(updated.value));
+  }
+  const created = await db.setting.create({
+    data: { key: `location`, value, userId: user.id },
   });
-  return NextResponse.json(JSON.parse(setting.value));
+  return NextResponse.json(JSON.parse(created.value));
 }

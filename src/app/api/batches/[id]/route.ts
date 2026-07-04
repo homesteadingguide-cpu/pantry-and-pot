@@ -1,16 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { getSessionInfo } from "@/lib/session";
+
+async function owns(id: string, userId: string | null) {
+  const item = await db.batch.findUnique({ where: { id } });
+  if (!item) return false;
+  return item.userId === userId;
+}
 
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const body = await req.json();
-  const existing = await db.batch.findUnique({ where: { id } });
-  if (!existing) {
+  const { user, canMutate } = await getSessionInfo();
+  if (!user || !canMutate) {
+    return NextResponse.json(
+      { error: "Sign in to make changes." },
+      { status: 401 },
+    );
+  }
+  if (!(await owns(id, user.id))) {
     return NextResponse.json({ error: "not found" }, { status: 404 });
   }
+  const body = await req.json();
   const patch: Record<string, unknown> = {};
   if (typeof body.type === "string") patch.type = body.type;
   if (typeof body.name === "string") patch.name = body.name.trim();
@@ -28,14 +41,12 @@ export async function PATCH(
   if (body.lastFedAt !== undefined) {
     patch.lastFedAt = body.lastFedAt ? new Date(body.lastFedAt) : null;
   }
-  // "Mark as fed" — set lastFedAt to now (does NOT change startDate, the batch's creation).
   if (body.markFed === true) {
     patch.lastFedAt = new Date();
   }
-  // If moving to "consumed" or "discarded", set actualEnd automatically.
   if (
     (body.status === "consumed" || body.status === "discarded") &&
-    !existing.actualEnd
+    !(await db.batch.findUnique({ where: { id } })).then((b) => b?.actualEnd)
   ) {
     patch.actualEnd = new Date();
   }
@@ -48,6 +59,16 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
+  const { user, canMutate } = await getSessionInfo();
+  if (!user || !canMutate) {
+    return NextResponse.json(
+      { error: "Sign in to make changes." },
+      { status: 401 },
+    );
+  }
+  if (!(await owns(id, user.id))) {
+    return NextResponse.json({ error: "not found" }, { status: 404 });
+  }
   await db.batch.delete({ where: { id } });
   return NextResponse.json({ ok: true });
 }

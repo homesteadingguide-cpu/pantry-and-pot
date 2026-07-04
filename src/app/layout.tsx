@@ -3,7 +3,7 @@ import { Inter, Lora, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
-import { QueryProvider } from "@/components/providers";
+import { Providers } from "@/components/providers";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -48,9 +48,9 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${lora.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
-        <QueryProvider>
+        <Providers>
           {children}
-        </QueryProvider>
+        </Providers>
         <Toaster />
         <SonnerToaster position="bottom-right" richColors />
       </body>

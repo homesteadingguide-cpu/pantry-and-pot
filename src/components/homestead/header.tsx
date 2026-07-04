@@ -16,6 +16,7 @@ import {
   MapPin,
   Pencil,
   Search,
+  Sparkles,
   Sprout,
   Sun,
   Thermometer,
@@ -63,9 +64,15 @@ interface GeoResult {
 interface Props {
   batches: Batch[];
   onGoToCultures?: () => void;
+  auth?: {
+    status: "loading" | "authenticated" | "unauthenticated";
+    daysLeft: number | null; // null = unauthenticated; Infinity = paid; number = trial days left
+    onSignIn: () => void;
+    onSignOut: () => void;
+  };
 }
 
-export function Header({ batches, onGoToCultures }: Props) {
+export function Header({ batches, onGoToCultures, auth }: Props) {
   // Render the date client-side only — otherwise SSR (UTC) and the browser
   // (user's locale, e.g. Pacific/Auckland) disagree on the day and React
   // throws a hydration mismatch.
@@ -139,7 +146,7 @@ export function Header({ batches, onGoToCultures }: Props) {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 text-sm">
+          <div className="flex flex-wrap items-end gap-2 text-sm">
             <Chip icon={Calendar} tone="neutral">
               {dateLabel || "—"}
             </Chip>
@@ -149,10 +156,76 @@ export function Header({ batches, onGoToCultures }: Props) {
               health={starterHealth}
               onClick={onGoToCultures}
             />
+            {auth && <AuthChip auth={auth} />}
           </div>
         </div>
       </div>
     </header>
+  );
+}
+
+// ---------- Auth chip ----------
+
+function AuthChip({
+  auth,
+}: {
+  auth: NonNullable<Props["auth"]>;
+}) {
+  if (auth.status === "loading") {
+    return (
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-muted-foreground ring-1 ring-border">
+        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+      </span>
+    );
+  }
+  if (auth.status === "unauthenticated") {
+    return (
+      <button
+        type="button"
+        onClick={auth.onSignIn}
+        className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-primary-foreground ring-1 ring-primary transition hover:bg-primary/90"
+      >
+        <Sparkles className="h-3.5 w-3.5" />
+        Start free trial
+      </button>
+    );
+  }
+  // Authenticated
+  const daysLeft = auth.daysLeft;
+  let label: string;
+  let tone: "primary" | "accent";
+  if (daysLeft === Infinity) {
+    label = "Subscribed";
+    tone = "primary";
+  } else if (daysLeft !== null && daysLeft <= 0) {
+    label = "Trial ended";
+    tone = "accent";
+  } else if (daysLeft !== null) {
+    label = `Trial: ${daysLeft}d left`;
+    tone = daysLeft <= 2 ? "accent" : "primary";
+  } else {
+    label = "Signed in";
+    tone = "primary";
+  }
+  const cls =
+    tone === "primary"
+      ? "bg-primary/15 text-primary ring-1 ring-primary/30"
+      : "bg-accent/20 text-accent-foreground ring-1 ring-accent/40";
+  return (
+    <div className="flex items-center gap-1">
+      <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 ${cls}`}>
+        <Sparkles className="h-3.5 w-3.5" />
+        {label}
+      </span>
+      <button
+        type="button"
+        onClick={auth.onSignOut}
+        className="inline-flex items-center rounded-full bg-muted px-2.5 py-1.5 text-xs text-muted-foreground ring-1 ring-border transition hover:bg-secondary/60"
+        title="Sign out"
+      >
+        Sign out
+      </button>
+    </div>
   );
 }
 

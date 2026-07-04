@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useSession, signOut } from "next-auth/react";
 import {
   Archive,
   Database,
@@ -34,6 +35,7 @@ import { Plantings } from "@/components/homestead/plantings";
 import { Batches } from "@/components/homestead/batches";
 import { Pantry } from "@/components/homestead/pantry";
 import { Shopping } from "@/components/homestead/shopping";
+import { AuthDialog } from "@/components/auth-dialog";
 import {
   type Batch,
   type BatchStatus,
@@ -49,6 +51,7 @@ import {
   type TaskRecurrence,
   isLowStock,
 } from "@/components/homestead/types";
+import { trialDaysLeft } from "@/lib/auth";
 
 type TabKey = "dashboard" | "chores" | "plantings" | "batches" | "pantry" | "shopping";
 
@@ -60,8 +63,52 @@ async function fetchJson<T>(url: string): Promise<T> {
 
 export default function Home() {
   const qc = useQueryClient();
+  const { data: session, status: sessionStatus } = useSession();
   const [tab, setTab] = useState<TabKey>("dashboard");
   const [seeded, setSeeded] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [authReason, setAuthReason] = useState<"trial" | "expired" | "signin">("trial");
+
+  // Compute trial status from session
+  const sessionUser = session?.user as
+    | { id: string; email: string; trialStartedAt: string; paidUntil: string | null }
+    | undefined;
+  const isAuthenticated = sessionStatus === "authenticated" && !!sessionUser;
+  const daysLeft = sessionUser
+    ? trialDaysLeft(sessionUser.trialStartedAt, sessionUser.paidUntil)
+    : null;
+  const canMutate = isAuthenticated && daysLeft !== null && daysLeft > 0;
+
+  const requireAuth = useCallback(
+    (action: string) => {
+      if (isAuthenticated && !canMutate) {
+        // Trial expired
+        setAuthReason("expired");
+        setAuthOpen(true);
+        toast.error("Your trial has ended. Subscribe to keep editing.");
+        return false;
+      }
+      if (!isAuthenticated) {
+        setAuthReason("trial");
+        setAuthOpen(true);
+        toast.error(`Sign in to ${action}.`);
+        return false;
+      }
+      return true;
+    },
+    [isAuthenticated, canMutate],
+  );
+
+  const openSignIn = useCallback(() => {
+    setAuthReason("trial");
+    setAuthOpen(true);
+  }, []);
+
+  const handleSignOut = useCallback(() => {
+    signOut({ redirect: false });
+    qc.clear();
+    window.location.reload();
+  }, [qc]);
 
   // Seed demo data ONLY if the DB is empty, so we don't wipe user work on refresh.
   useEffect(() => {
@@ -746,6 +793,12 @@ export default function Home() {
       <Header
         batches={batches}
         onGoToCultures={() => setTab("batches")}
+        auth={{
+          status: sessionStatus,
+          daysLeft,
+          onSignIn: openSignIn,
+          onSignOut: handleSignOut,
+        }}
       />
 
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 sm:px-6 py-6 sm:py-8">
@@ -798,32 +851,32 @@ export default function Home() {
               </TabsTrigger>
             </TabsList>
 
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-muted-foreground"
-                  title="Wipe all data and restore demo seed"
-                >
-                  <Database className="mr-1.5 h-3.5 w-3.5" />
-                  Reset all data
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Reset all data?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This will <strong>permanently delete</strong> every chore,
-                    planting, batch, pantry item, and shopping list entry you’ve
-                    added, and restore the original demo data. This can’t be
-                    undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={reseed}
+            {!isAuthenticated && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-muted-foreground"
+                    title="Restore the demo data to its original state"
+                  >
+                    <Database className="mr-1.5 h-3.5 w-3.5" />
+                    Reset demo data
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Reset demo data?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This restores the demo data to its original state so you
+                      can see the app as a new visitor would. This can’t be
+                      undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={reseed}
                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                   >
                     Yes, reset everything
@@ -831,6 +884,7 @@ export default function Home() {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
+            )}
           </div>
 
           <TabsContent value="dashboard" className="m-0 focus-visible:outline-none">
@@ -855,15 +909,23 @@ export default function Home() {
             ) : (
               <Chores
                 tasks={tasks}
-                onToggle={(id, completed) => toggleTask.mutate({ id, completed })}
-                onDelete={(id) => deleteTask.mutate(id)}
+                onToggle={(id, completed) => {
+                  if (!requireAuth("mark chores complete")) return;
+                  toggleTask.mutate({ id, completed });
+                }}
+                onDelete={(id) => {
+                  if (!requireAuth("delete chores")) return;
+                  deleteTask.mutate(id);
+                }}
                 onCreate={(data) => {
+                  if (!requireAuth("add chores")) return;
                   createTask.mutate(data, {
                     onSuccess: () => toast.success("Chore added to the ledger."),
                     onError: () => toast.error("Could not add chore."),
                   });
                 }}
                 onEdit={(id, data) => {
+                  if (!requireAuth("edit chores")) return;
                   editTask.mutate(
                     { id, data },
                     {
@@ -883,12 +945,14 @@ export default function Home() {
               <Plantings
                 plantings={plantings}
                 onCreate={(data) => {
+                  if (!requireAuth("add plantings")) return;
                   createPlanting.mutate(data, {
                     onSuccess: () => toast.success("Planting added to the counter garden."),
                     onError: () => toast.error("Could not add planting."),
                   });
                 }}
                 onEdit={(id, data) => {
+                  if (!requireAuth("edit plantings")) return;
                   editPlanting.mutate(
                     { id, data },
                     {
@@ -897,10 +961,14 @@ export default function Home() {
                     },
                   );
                 }}
-                onStatusChange={(id, status) =>
-                  changePlantingStatus.mutate({ id, status })
-                }
-                onDelete={(id) => deletePlanting.mutate(id)}
+                onStatusChange={(id, status) => {
+                  if (!requireAuth("change planting status")) return;
+                  changePlantingStatus.mutate({ id, status });
+                }}
+                onDelete={(id) => {
+                  if (!requireAuth("delete plantings")) return;
+                  deletePlanting.mutate(id);
+                }}
               />
             )}
           </TabsContent>
@@ -912,12 +980,14 @@ export default function Home() {
               <Batches
                 batches={batches}
                 onCreate={(data) => {
+                  if (!requireAuth("add batches")) return;
                   createBatch.mutate(data, {
                     onSuccess: () => toast.success("Batch added to the counter."),
                     onError: () => toast.error("Could not add batch."),
                   });
                 }}
                 onEdit={(id, data) => {
+                  if (!requireAuth("edit batches")) return;
                   editBatch.mutate(
                     { id, data },
                     {
@@ -926,14 +996,21 @@ export default function Home() {
                     },
                   );
                 }}
-                onAdvance={(id, status) => advanceBatch.mutate({ id, status })}
+                onAdvance={(id, status) => {
+                  if (!requireAuth("advance batches")) return;
+                  advanceBatch.mutate({ id, status });
+                }}
                 onFeed={(id) => {
+                  if (!requireAuth("mark batches as fed")) return;
                   feedBatch.mutate(id, {
                     onSuccess: () => toast.success("Marked as fed — fresh start."),
                     onError: () => toast.error("Could not mark as fed."),
                   });
                 }}
-                onDelete={(id) => deleteBatch.mutate(id)}
+                onDelete={(id) => {
+                  if (!requireAuth("delete batches")) return;
+                  deleteBatch.mutate(id);
+                }}
               />
             )}
           </TabsContent>
@@ -945,12 +1022,14 @@ export default function Home() {
               <Pantry
                 items={pantry}
                 onCreate={(data) => {
+                  if (!requireAuth("add pantry items")) return;
                   createPantryItem.mutate(data, {
                     onSuccess: () => toast.success("Added to the pantry."),
                     onError: () => toast.error("Could not add pantry item."),
                   });
                 }}
                 onEdit={(id, data) => {
+                  if (!requireAuth("edit pantry items")) return;
                   editPantryItem.mutate(
                     { id, data },
                     {
@@ -959,8 +1038,12 @@ export default function Home() {
                     },
                   );
                 }}
-                onAdjust={(id, delta) => adjustPantryItem.mutate({ id, delta })}
+                onAdjust={(id, delta) => {
+                  if (!requireAuth("adjust pantry quantities")) return;
+                  adjustPantryItem.mutate({ id, delta });
+                }}
                 onAddToShopping={(item) => {
+                  if (!requireAuth("add to shopping list")) return;
                   createShoppingItem.mutate(
                     {
                       name: item.name,
@@ -976,7 +1059,10 @@ export default function Home() {
                     },
                   );
                 }}
-                onDelete={(id) => deletePantryItem.mutate(id)}
+                onDelete={(id) => {
+                  if (!requireAuth("delete pantry items")) return;
+                  deletePantryItem.mutate(id);
+                }}
               />
             )}
           </TabsContent>
@@ -989,18 +1075,22 @@ export default function Home() {
                 items={shopping}
                 lowStockPantry={pantry.filter(isLowStock)}
                 onCreate={(data) => {
+                  if (!requireAuth("add shopping items")) return;
                   createShoppingItem.mutate(data, {
                     onSuccess: () => toast.success("Added to shopping list."),
                     onError: () => toast.error("Could not add to shopping list."),
                   });
                 }}
-                onAdjust={(id, delta) =>
-                  adjustShoppingItem.mutate({ id, delta })
-                }
-                onToggleGot={(id, got) =>
-                  toggleShoppingGot.mutate({ id, got })
-                }
+                onAdjust={(id, delta) => {
+                  if (!requireAuth("adjust shopping quantities")) return;
+                  adjustShoppingItem.mutate({ id, delta });
+                }}
+                onToggleGot={(id, got) => {
+                  if (!requireAuth("mark shopping items as got")) return;
+                  toggleShoppingGot.mutate({ id, got });
+                }}
                 onAddFromPantry={(item) => {
+                  if (!requireAuth("add to shopping list")) return;
                   createShoppingItem.mutate(
                     {
                       name: item.name,
@@ -1017,6 +1107,7 @@ export default function Home() {
                   );
                 }}
                 onRestockPantry={(shoppingId, qty) => {
+                  if (!requireAuth("restock pantry")) return;
                   const sItem = shopping.find((i) => i.id === shoppingId);
                   if (!sItem?.pantryItemId) {
                     toast.error("No linked pantry item to restock.");
@@ -1037,13 +1128,17 @@ export default function Home() {
                   );
                 }}
                 onClearGot={() => {
+                  if (!requireAuth("clear got items")) return;
                   clearGotShopping.mutate(undefined, {
                     onSuccess: (res) =>
                       toast.success(`Cleared ${res?.count ?? 0} got item(s).`),
                     onError: () => toast.error("Could not clear got items."),
                   });
                 }}
-                onDelete={(id) => deleteShoppingItem.mutate(id)}
+                onDelete={(id) => {
+                  if (!requireAuth("delete shopping items")) return;
+                  deleteShoppingItem.mutate(id);
+                }}
               />
             )}
           </TabsContent>
@@ -1070,37 +1165,50 @@ export default function Home() {
             </a>
             <span className="text-muted-foreground/60">·</span>
             <p>
-              Data lives in a local SQLite file —{' '}
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <button className="underline underline-offset-2 hover:text-foreground">
-                    reset all data
-                  </button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Reset all data?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This permanently deletes every entry and restores the
-                      original demo data. Can’t be undone.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={reseed}
-                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                    >
-                      Yes, reset everything
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-              .
+              {isAuthenticated
+                ? `Signed in as ${sessionUser?.email}`
+                : "Demo mode — sign in to save your own data."}
+              {!isAuthenticated && (
+                <>
+                  {' '}
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <button className="underline underline-offset-2 hover:text-foreground">
+                        reset demo data
+                      </button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Reset demo data?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Restores the demo data to its original state. Can’t
+                          be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={reseed}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Yes, reset
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                  .
+                </>
+              )}
             </p>
           </div>
         </div>
       </footer>
+
+      <AuthDialog
+        open={authOpen}
+        onOpenChange={setAuthOpen}
+        reason={authReason}
+      />
     </div>
   );
 }

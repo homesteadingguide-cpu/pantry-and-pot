@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
 const day = (offset: number) => {
@@ -8,16 +7,11 @@ const day = (offset: number) => {
   return d;
 };
 
-// Seed DEMO data (userId = null) — visible to unsigned visitors.
-// This is what the "Reset all data" button on the demo mode restores.
-export async function POST() {
-  // Wipe only demo data (userId = null), never user data.
-  await db.task.deleteMany({ where: { userId: null } });
-  await db.planting.deleteMany({ where: { userId: null } });
-  await db.batch.deleteMany({ where: { userId: null } });
-  await db.pantryItem.deleteMany({ where: { userId: null } });
-  await db.shoppingItem.deleteMany({ where: { userId: null } });
-
+/**
+ * Seed a copy of the demo dataset for a specific user.
+ * Called when a new user signs up so they have something to play with.
+ */
+export async function seedDemoDataForUser(userId: string) {
   const tasks = [
     { title: "Feed sourdough starter ‘Bubbles’", category: "kitchen", recurrence: "daily", dueDate: day(0), priority: "high", notes: "1:1:1 ratio — 20g starter, 20g flour, 20g water." },
     { title: "Bottle kombucha 2F (raspberry-ginger)", category: "brewing", recurrence: "none", dueDate: day(0), priority: "high", notes: "Burp the swing-tops at 36h to avoid geyers." },
@@ -80,25 +74,15 @@ export async function POST() {
   ];
 
   for (const t of tasks) {
-    await db.task.create({ data: { ...t, userId: null } });
+    await db.task.create({ data: { ...t, userId } });
   }
   for (const p of plantings) {
-    await db.planting.create({ data: { ...p, userId: null } });
+    await db.planting.create({ data: { ...p, userId } });
   }
   for (const b of batches) {
-    await db.batch.create({ data: { ...b, userId: null } });
+    await db.batch.create({ data: { ...b, userId } });
   }
   for (const p of pantry) {
-    await db.pantryItem.create({ data: { ...p, userId: null } });
+    await db.pantryItem.create({ data: { ...p, userId } });
   }
-
-  return NextResponse.json({
-    ok: true,
-    seeded: {
-      tasks: tasks.length,
-      plantings: plantings.length,
-      batches: batches.length,
-      pantry: pantry.length,
-    },
-  });
 }

@@ -1,4 +1,4 @@
-// Prisma schema for the Homestead app
+// Prisma schema for Pantry and Pot
 
 generator client {
   provider = "prisma-client-js"
@@ -9,61 +9,86 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  name           String?
+  trialStartedAt DateTime @default(now())
+  paidUntil      DateTime? // null = trial-only; future date = paid through then
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  tasks         Task[]
+  plantings     Planting[]
+  batches       Batch[]
+  pantryItems   PantryItem[]
+  shoppingItems ShoppingItem[]
+  settings      Setting[]
+}
+
 model Task {
   id          String   @id @default(cuid())
   title       String
   notes       String?
-  category    String   @default("general") // general | kitchen | balcony | pantry | brewing
-  recurrence  String   @default("none")    // none | daily | weekly | monthly
+  category    String   @default("general")
+  recurrence  String   @default("none")
   dueDate     DateTime?
   completed   Boolean  @default(false)
   completedAt DateTime?
-  priority    String   @default("normal")  // low | normal | high
+  priority    String   @default("normal")
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
 model Planting {
-  id            String   @id @default(cuid())
-  crop          String
-  variety       String?
-  spot          String?  // e.g. "Balcony railing", "Kitchen window", "Grow shelf"
-  status        String   @default("planned") // planned | seeded | sprouted | growing | harvest-ready | harvested
-  datePlanted   DateTime?
+  id              String   @id @default(cuid())
+  crop            String
+  variety         String?
+  spot            String?
+  status          String   @default("planned")
+  datePlanted     DateTime?
   expectedHarvest DateTime?
-  actualHarvest DateTime?
-  quantity      Int      @default(1)
-  notes         String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  actualHarvest   DateTime?
+  quantity        Int      @default(1)
+  notes           String?
+  userId          String?
+  user            User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model Batch {
-  id           String   @id @default(cuid())
-  type         String   // kombucha | sourdough | kraut | kefir | kimchi | vinegar | miso | other
-  name         String
-  status       String   @default("active") // active | fermenting | bottling | ready | consumed | discarded
-  startDate    DateTime?
-  expectedEnd  DateTime?
-  actualEnd    DateTime?
-  lastFedAt    DateTime?  // Most recent feeding/refresh — separate from startDate (the batch's creation)
-  notes        String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          String   @id @default(cuid())
+  type        String
+  name        String
+  status      String   @default("active")
+  startDate   DateTime?
+  expectedEnd DateTime?
+  actualEnd   DateTime?
+  lastFedAt   DateTime?
+  notes       String?
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model PantryItem {
-  id          String   @id @default(cuid())
-  name        String
-  category    String   @default("dry") // dry | ferment | preserve | canned | frozen | spice | supply
-  quantity    Float    @default(1)
-  unit        String   @default("jar") // jar | bag | kg | g | L | ml | bottle | pack
-  lowStockAt  Float?
-  location    String?  // e.g. "Top shelf", "Fridge door", "Root cellar"
-  dateAdded   DateTime @default(now())
-  notes       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  name       String
+  category   String   @default("dry")
+  quantity   Float    @default(1)
+  unit       String   @default("jar")
+  lowStockAt Float?
+  location   String?
+  dateAdded  DateTime @default(now())
+  notes      String?
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model ShoppingItem {
@@ -72,15 +97,18 @@ model ShoppingItem {
   quantity     Float    @default(1)
   unit         String   @default("pack")
   notes        String?
-  gotAt        DateTime?  // Set when marked as purchased
-  pantryItemId String?   // Optional link back to a PantryItem (for restock suggestions)
+  gotAt        DateTime?
+  pantryItemId String?
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
 
-// Simple key/value store for app settings (location, units, etc.)
 model Setting {
   key       String   @id
   value     String
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   updatedAt DateTime @updatedAt
 }
