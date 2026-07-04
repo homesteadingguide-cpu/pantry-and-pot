@@ -38,7 +38,7 @@ export function AuthDialog({ open, onOpenChange, reason = "signin" }: Props) {
     setLoading(true);
     const res = await signIn("credentials", {
       email: email.trim().toLowerCase(),
-      password: passcode,
+      passcode,
       redirect: false,
     });
     setLoading(false);

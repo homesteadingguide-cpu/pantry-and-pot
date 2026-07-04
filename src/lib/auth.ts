@@ -24,13 +24,6 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         const email = credentials?.email?.trim().toLowerCase();
         const passcode = credentials?.passcode;
-        console.log("[auth] authorize called", {
-          hasEmail: !!email,
-          hasPasscode: !!passcode,
-          passcodeLength: passcode?.length,
-          envPasscodeLength: TRIAL_PASSCODE.length,
-          match: passcode === TRIAL_PASSCODE,
-        });
         if (!email || !passcode) return null;
         if (passcode !== TRIAL_PASSCODE) return null;
 
