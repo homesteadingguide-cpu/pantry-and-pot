@@ -124,7 +124,7 @@ export function Dashboard({
           icon={AlertTriangle}
           label="Pantry low"
           value={`${lowStockItems.length}`}
-          hint={`${growingCount} still growing on the sill`}
+          hint="items running low"
           tone={lowStockItems.length > 0 ? "accent" : undefined}
         />
       </div>
@@ -136,7 +136,7 @@ export function Dashboard({
             <div>
               <CardTitle className="font-serif text-2xl">Today on the counter</CardTitle>
               <CardDescription>
-                The small daily acts that keep a homestead humming.
+                Today's small tasks — feed, water, check, repeat.
               </CardDescription>
             </div>
             <Button

@@ -14,7 +14,7 @@ const day = (offset: number) => {
 export async function seedDemoDataForUser(userId: string) {
   const tasks = [
     { title: "Feed sourdough starter ‘Bubbles’", category: "kitchen", recurrence: "daily", dueDate: day(0), priority: "high", notes: "1:1:1 ratio — 20g starter, 20g flour, 20g water." },
-    { title: "Bottle kombucha 2F (raspberry-ginger)", category: "brewing", recurrence: "none", dueDate: day(0), priority: "high", notes: "Burp the swing-tops at 36h to avoid geyers." },
+    { title: "Bottle kombucha 2F (raspberry-ginger)", category: "brewing", recurrence: "none", dueDate: day(0), priority: "high", notes: "Burp the swing-tops at 36h to avoid geysers." },
     { title: "Mix overnight poolish for tomorrow’s loaf", category: "kitchen", recurrence: "daily", dueDate: day(0), priority: "normal" },
     { title: "Stretch-and-fold the dough at 9pm", category: "kitchen", recurrence: "none", dueDate: day(0), priority: "normal" },
     { title: "Water the balcony tomatoes", category: "balcony", recurrence: "daily", dueDate: day(0), priority: "high", notes: "Top-water, avoid splashing leaves — they mildew easily." },

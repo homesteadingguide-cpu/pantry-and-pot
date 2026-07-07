@@ -808,11 +808,11 @@ export default function Home() {
         <Tabs value={tab} onValueChange={(v) => setTab(v as TabKey)} className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <TabsList className="bg-muted/60 p-1">
-              <TabsTrigger value="dashboard" className="gap-1.5">
+              <TabsTrigger value="dashboard" className="gap-1.5" aria-label="Dashboard">
                 <LayoutDashboard className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Dashboard</span>
               </TabsTrigger>
-              <TabsTrigger value="chores" className="gap-1.5">
+              <TabsTrigger value="chores" className="gap-1.5" aria-label="Chores">
                 <ListTodo className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Chores</span>
                 {openTaskCount > 0 && (
@@ -821,11 +821,11 @@ export default function Home() {
                   </span>
                 )}
               </TabsTrigger>
-              <TabsTrigger value="plantings" className="gap-1.5">
+              <TabsTrigger value="plantings" className="gap-1.5" aria-label="Plantings">
                 <Sprout className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Plantings</span>
               </TabsTrigger>
-              <TabsTrigger value="batches" className="gap-1.5">
+              <TabsTrigger value="batches" className="gap-1.5" aria-label="Cultures">
                 <FlaskConical className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Cultures</span>
                 {readyBatchCount > 0 && (
@@ -834,7 +834,7 @@ export default function Home() {
                   </span>
                 )}
               </TabsTrigger>
-              <TabsTrigger value="pantry" className="gap-1.5">
+              <TabsTrigger value="pantry" className="gap-1.5" aria-label="Pantry">
                 <Archive className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Pantry</span>
                 {lowStockCount > 0 && (
@@ -843,7 +843,7 @@ export default function Home() {
                   </span>
                 )}
               </TabsTrigger>
-              <TabsTrigger value="shopping" className="gap-1.5">
+              <TabsTrigger value="shopping" className="gap-1.5" aria-label="Shopping">
                 <ShoppingCart className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Shopping</span>
                 {pendingShoppingCount > 0 && (
