@@ -132,7 +132,7 @@ function AuthChip({
   let label: string;
   let tone: "primary" | "accent";
   if (daysLeft === Infinity) {
-    label = "Subscribed";
+    label = "Full version";
     tone = "primary";
   } else if (daysLeft !== null && daysLeft <= 0) {
     label = "Trial ended";

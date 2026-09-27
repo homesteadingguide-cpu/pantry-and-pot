@@ -3,9 +3,12 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { db } from "@/lib/db";
 import { seedDemoDataForUser } from "@/lib/seed";
 
-const TRIAL_PASSCODE = process.env.TRIAL_PASSCODE || "PANTRYPOT";
-const PAID_PASSCODE = process.env.PAID_PASSCODE || "PANTRYPAID";
-export const TRIAL_DAYS = 7;
+// Client-safe trial helpers live in trial.ts so this file never reaches the browser bundle.
+export { TRIAL_DAYS, isTrialActive, trialDaysLeft } from "@/lib/trial";
+
+// Passcodes come only from env vars, never from source (this repo is public).
+const TRIAL_PASSCODE = process.env.TRIAL_PASSCODE;
+const PAID_PASSCODE = process.env.PAID_PASSCODE;
 // When a paid user signs in, set paidUntil to this far in the future.
 // Year 2126 — effectively "lifetime" but still a date we can extend later.
 const PAID_UNTIL_YEARS = 100;
@@ -28,7 +31,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         const email = credentials?.email?.trim().toLowerCase();
         const passcode = credentials?.passcode;
-        if (!email || !passcode) return null;
+        if (!email || !passcode || !TRIAL_PASSCODE || !PAID_PASSCODE) return null;
 
         // Determine access type from the passcode the user entered.
         const isPaid = passcode === PAID_PASSCODE;
@@ -93,26 +96,3 @@ export const authOptions: NextAuthOptions = {
     signIn: "/",
   },
 };
-
-export function isTrialActive(
-  trialStartedAt: string | null,
-  paidUntil: string | null,
-): boolean {
-  if (paidUntil && new Date(paidUntil) > new Date()) return true;
-  if (!trialStartedAt) return false;
-  const end = new Date(trialStartedAt);
-  end.setDate(end.getDate() + TRIAL_DAYS);
-  return new Date() < end;
-}
-
-export function trialDaysLeft(
-  trialStartedAt: string | null,
-  paidUntil: string | null,
-): number {
-  if (paidUntil && new Date(paidUntil) > new Date()) return Infinity;
-  if (!trialStartedAt) return 0;
-  const end = new Date(trialStartedAt);
-  end.setDate(end.getDate() + TRIAL_DAYS);
-  const ms = end.getTime() - Date.now();
-  return Math.max(0, Math.ceil(ms / 86_400_000));
-}
