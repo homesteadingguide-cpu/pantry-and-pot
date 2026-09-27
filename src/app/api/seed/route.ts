@@ -10,7 +10,20 @@ const day = (offset: number) => {
 
 // Seed DEMO data (userId = null) — visible to unsigned visitors.
 // This is what the "Reset all data" button on the demo mode restores.
-export async function POST() {
+export async function POST(req: Request) {
+  // ?ifStale=1: only reseed when the demo data was created before today, so its
+  // relative dates ("due today", "ready tomorrow") stay current for visitors.
+  if (new URL(req.url).searchParams.get("ifStale")) {
+    const newest = await db.task.findFirst({
+      where: { userId: null },
+      orderBy: { createdAt: "desc" },
+      select: { createdAt: true },
+    });
+    if (newest && newest.createdAt >= day(0)) {
+      return NextResponse.json({ ok: true, reseeded: false });
+    }
+  }
+
   // Wipe only demo data (userId = null), never user data.
   await db.task.deleteMany({ where: { userId: null } });
   await db.planting.deleteMany({ where: { userId: null } });
@@ -94,6 +107,7 @@ export async function POST() {
 
   return NextResponse.json({
     ok: true,
+    reseeded: true,
     seeded: {
       tasks: tasks.length,
       plantings: plantings.length,
