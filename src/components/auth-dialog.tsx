@@ -63,7 +63,7 @@ export function AuthDialog({ open, onOpenChange, reason = "signin" }: Props) {
 
   const description =
     reason === "expired"
-      ? "You can still browse your data, but editing is locked. Subscribe to keep managing your homestead."
+      ? "You can still browse your data, but editing is locked. Buy the full version to keep managing your homestead."
       : "Enter your email and passcode to continue. Use your trial passcode for 7 days free, or your paid passcode for full access.";
 
   return (

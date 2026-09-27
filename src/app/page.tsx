@@ -51,7 +51,7 @@ import {
   type TaskRecurrence,
   isLowStock,
 } from "@/components/homestead/types";
-import { trialDaysLeft } from "@/lib/auth";
+import { trialDaysLeft } from "@/lib/trial";
 
 type TabKey = "dashboard" | "chores" | "plantings" | "batches" | "pantry" | "shopping";
 
@@ -85,7 +85,7 @@ export default function Home() {
         // Trial expired
         setAuthReason("expired");
         setAuthOpen(true);
-        toast.error("Your trial has ended. Subscribe to keep editing.");
+        toast.error("Your trial has ended. Buy the full version to keep editing.");
         return false;
       }
       if (!isAuthenticated) {

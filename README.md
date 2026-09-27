@@ -62,7 +62,7 @@ git push -u origin main
 2. Click "New Project" → import your `pantry-and-pot` repo
 3. Add these environment variables:
    - `DATABASE_URL` — your Neon connection string
-   - `TRIAL_PASSCODE` — e.g. `PANTRYPOT` (share with trial users)
+   - `TRIAL_PASSCODE` — e.g. `choose-a-trial-code` (share with trial users)
    - `NEXTAUTH_SECRET` — generate with `openssl rand -base64 32`
    - `NEXTAUTH_URL` — your Vercel URL (e.g. `https://pantry-and-pot.vercel.app`)
    - `PAYHIP_URL` — your Payhip product URL
@@ -90,7 +90,7 @@ Then run `bunx prisma db push` to create the tables in Postgres.
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `DATABASE_URL` | Database connection string | `file:./db/custom.db` (dev) or `postgresql://...` (prod) |
-| `TRIAL_PASSCODE` | Passcode for trial signup | `PANTRYPOT` |
+| `TRIAL_PASSCODE` | Passcode for trial signup | `choose-a-trial-code` |
 | `NEXTAUTH_SECRET` | Random secret for JWT signing | Run `openssl rand -base64 32` |
 | `NEXTAUTH_URL` | Your app's URL | `http://localhost:3000` or `https://yourapp.vercel.app` |
 | `PAYHIP_URL` | Your Payhip product URL | `https://payhip.com/your-product` |
