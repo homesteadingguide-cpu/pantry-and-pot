@@ -830,7 +830,7 @@ export default function Home() {
                 <ListTodo className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Chores</span>
                 {openTaskCount > 0 && (
-                  <span className="ml-0.5 rounded-full bg-accent/20 px-1.5 text-[10px] font-medium text-accent-foreground">
+                  <span className="ml-0.5 rounded-full bg-accent/20 px-1.5 text-[10px] font-medium text-accent-ink">
                     {openTaskCount}
                   </span>
                 )}
@@ -843,7 +843,7 @@ export default function Home() {
                 <FlaskConical className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Cultures</span>
                 {readyBatchCount > 0 && (
-                  <span className="ml-0.5 rounded-full bg-accent/20 px-1.5 text-[10px] font-medium text-accent-foreground">
+                  <span className="ml-0.5 rounded-full bg-accent/20 px-1.5 text-[10px] font-medium text-accent-ink">
                     {readyBatchCount}
                   </span>
                 )}
@@ -852,7 +852,7 @@ export default function Home() {
                 <Archive className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Pantry</span>
                 {lowStockCount > 0 && (
-                  <span className="ml-0.5 rounded-full bg-accent/20 px-1.5 text-[10px] font-medium text-accent-foreground">
+                  <span className="ml-0.5 rounded-full bg-accent/20 px-1.5 text-[10px] font-medium text-accent-ink">
                     {lowStockCount}
                   </span>
                 )}
@@ -861,7 +861,7 @@ export default function Home() {
                 <ShoppingCart className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Shopping</span>
                 {pendingShoppingCount > 0 && (
-                  <span className="ml-0.5 rounded-full bg-accent/20 px-1.5 text-[10px] font-medium text-accent-foreground">
+                  <span className="ml-0.5 rounded-full bg-accent/20 px-1.5 text-[10px] font-medium text-accent-ink">
                     {pendingShoppingCount}
                   </span>
                 )}

@@ -119,7 +119,7 @@ export function Pantry({
               {lowStock.map((i) => (
                 <span
                   key={i.id}
-                  className="rounded-full bg-accent/15 px-2 py-0.5 text-xs text-accent-foreground ring-1 ring-accent/30"
+                  className="rounded-full bg-accent/15 px-2 py-0.5 text-xs text-accent-ink ring-1 ring-accent/30"
                 >
                   {i.name} · {i.quantity} {i.unit}
                 </span>
