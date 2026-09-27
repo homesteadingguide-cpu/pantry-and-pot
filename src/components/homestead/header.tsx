@@ -147,7 +147,7 @@ function AuthChip({
   const cls =
     tone === "primary"
       ? "bg-primary/15 text-primary ring-1 ring-primary/30"
-      : "bg-accent/20 text-accent-foreground ring-1 ring-accent/40";
+      : "bg-accent/20 text-accent-ink ring-1 ring-accent/40";
   return (
     <div className="flex items-center gap-1">
       <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 ${cls}`}>
@@ -181,7 +181,7 @@ function Chip({
     tone === "primary"
       ? "bg-primary/15 text-primary ring-1 ring-primary/30"
       : tone === "accent"
-        ? "bg-accent/15 text-accent-foreground ring-1 ring-accent/30"
+        ? "bg-accent/15 text-accent-ink ring-1 ring-accent/30"
         : "bg-secondary/60 text-secondary-foreground ring-1 ring-border";
   return (
     <span
@@ -206,7 +206,7 @@ function StarterChip({
     health.tone === "ok"
       ? "bg-primary/15 text-primary ring-1 ring-primary/30"
       : health.tone === "warning"
-        ? "bg-accent/15 text-accent-foreground ring-1 ring-accent/30"
+        ? "bg-accent/15 text-accent-ink ring-1 ring-accent/30"
         : health.tone === "critical"
           ? "bg-destructive/15 text-destructive ring-1 ring-destructive/30"
           : "bg-muted text-muted-foreground ring-1 ring-border";

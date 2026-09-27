@@ -28,6 +28,8 @@
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
+  /* Dark terracotta for text on translucent accent tints (bg-accent/15 etc.), which near-white accent-foreground can't be read on. */
+  --color-accent-ink: oklch(0.45 0.12 45);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);

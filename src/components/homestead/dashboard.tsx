@@ -261,7 +261,7 @@ export function Dashboard({
                       {i.location ?? "no spot"} · reorder soon
                     </p>
                   </div>
-                  <span className="shrink-0 rounded-full bg-accent/15 px-2 py-0.5 text-xs font-medium text-accent-foreground ring-1 ring-accent/30">
+                  <span className="shrink-0 rounded-full bg-accent/15 px-2 py-0.5 text-xs font-medium text-accent-ink ring-1 ring-accent/30">
                     {i.quantity} {i.unit}
                   </span>
                 </div>
