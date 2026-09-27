@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
+// Midday UTC falls on the same calendar day for visitors from the US to Europe,
+// so "due today" demo items don't show as "due yesterday" in US time zones.
 const day = (offset: number) => {
   const d = new Date();
-  d.setHours(0, 0, 0, 0);
-  d.setDate(d.getDate() + offset);
+  d.setUTCHours(12, 0, 0, 0);
+  d.setUTCDate(d.getUTCDate() + offset);
   return d;
 };
 
@@ -19,7 +21,9 @@ export async function POST(req: Request) {
       orderBy: { createdAt: "desc" },
       select: { createdAt: true },
     });
-    if (newest && newest.createdAt >= day(0)) {
+    const startOfToday = new Date();
+    startOfToday.setUTCHours(0, 0, 0, 0);
+    if (newest && newest.createdAt >= startOfToday) {
       return NextResponse.json({ ok: true, reseeded: false });
     }
   }

@@ -1,9 +1,11 @@
 import { db } from "@/lib/db";
 
+// Midday UTC falls on the same calendar day for visitors from the US to Europe,
+// so "due today" demo items don't show as "due yesterday" in US time zones.
 const day = (offset: number) => {
   const d = new Date();
-  d.setHours(0, 0, 0, 0);
-  d.setDate(d.getDate() + offset);
+  d.setUTCHours(12, 0, 0, 0);
+  d.setUTCDate(d.getUTCDate() + offset);
   return d;
 };
 
