@@ -113,6 +113,20 @@ export default function Home() {
     window.location.href = window.location.pathname;
   }, [qc]);
 
+  // Demo visitors: refresh the shared demo data once a day so its dates stay current.
+  useEffect(() => {
+    if (sessionStatus !== "unauthenticated") return;
+    fetch("/api/seed?ifStale=1", { method: "POST" })
+      .then((r) => r.json())
+      .then((res) => {
+        if (!res?.reseeded) return;
+        for (const key of ["tasks", "plantings", "batches", "pantry", "shopping"]) {
+          qc.invalidateQueries({ queryKey: [key] });
+        }
+      })
+      .catch(() => {});
+  }, [sessionStatus, qc]);
+
   // Seed demo data ONLY if the DB is empty, so we don't wipe user work on refresh.
   useEffect(() => {
     (async () => {
